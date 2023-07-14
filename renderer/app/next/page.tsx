@@ -1,8 +1,10 @@
+import "../globals.css";
+
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 
-function Next() {
+export default function Next() {
   return (
     <React.Fragment>
       <Head>
@@ -20,5 +22,3 @@ function Next() {
     </React.Fragment>
   );
 }
-
-export default Next;
