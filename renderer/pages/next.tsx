@@ -1,23 +1,24 @@
-import React from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
+import React from "react";
+import Head from "next/head";
+import Link from "next/link";
 
 function Next() {
   return (
     <React.Fragment>
       <Head>
-        <title>Next - Nextron (with-typescript)</title>
+        <title>Next - Nextron (with-typescript-tailwindcss)</title>
       </Head>
-      <div>
-        <p>
-          ⚡ Electron + Next.js ⚡ -
-          <Link href="/home">
-            <a>Go to home page</a>
-          </Link>
-        </p>
+      <div className="grid grid-col-1 text-2xl w-full text-center">
+        <img className="ml-auto mr-auto" src="/images/logo.png" />
+        <span>⚡ Nextron ⚡</span>
+      </div>
+      <div className="mt-1 w-full flex-wrap flex justify-center">
+        <Link href="/home">
+          <a className="bg-blue-100 p-4 rounded">Go to home page</a>
+        </Link>
       </div>
     </React.Fragment>
   );
-};
+}
 
 export default Next;
