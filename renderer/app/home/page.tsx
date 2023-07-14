@@ -11,9 +11,7 @@ function Home() {
       <div>
         <p>
           ⚡ Electron + Next.js ⚡ -
-          <Link href="/next">
-            <a>Go to next page hello</a>
-          </Link>
+          <Link href="/next">Go to next page hello</Link>
         </p>
         <img src="/images/logo.png" />
       </div>

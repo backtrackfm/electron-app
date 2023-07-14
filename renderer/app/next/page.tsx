@@ -13,8 +13,8 @@ function Next() {
         <span>⚡ Nextron ⚡</span>
       </div>
       <div className="mt-1 w-full flex-wrap flex justify-center">
-        <Link href="/home">
-          <a className="bg-blue-100 p-4 rounded">Go to home page</a>
+        <Link href="/home" className="bg-blue-100 p-4 rounded">
+          Go to home page
         </Link>
       </div>
     </React.Fragment>
