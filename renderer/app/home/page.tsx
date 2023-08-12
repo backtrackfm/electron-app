@@ -1,20 +1,29 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import logo from "@/public/images/logo.svg";
 
 function Home() {
   return (
-    <div className="h-screen min-h-screen">
-      <div className="bg-zinc-950 h-full">
-        <div>
-          <div className="w-64 h-64 relative">
-            <Image src="/images/logo.svg" alt="⏮️" layout="fill" />
+    <>
+      <div className="h-full w-full mt-8 flex justify-center">
+        <div className="inline-flex flex-col gap-16">
+          <div className="flex w-full justify-center">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 relative">
+                <Image src={logo} alt="⏮️" />
+              </div>
+              <h1 className="text-2xl font-semibold">Backtrack</h1>
+            </div>
           </div>
-          <h1 className="text-white">Hello World</h1>
-          <Button>hello</Button>
+
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+            Version your music
+          </h1>
+          <Button>Sign in</Button>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

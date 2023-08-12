@@ -11,7 +11,10 @@ module.exports = {
       },
     },
     fontFamily: {
-      sans: ["articulat-cf"],
+      sans: ["articulat-cf", "sans-serif"],
+    },
+    fontFamily: {
+      medium: 600,
     },
     extend: {
       colors: {

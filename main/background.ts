@@ -16,6 +16,8 @@ if (isProd) {
   const mainWindow = createWindow("backtrack", {
     width: 1000,
     height: 600,
+    minHeight: 600,
+    minWidth: 400,
   });
 
   if (isProd) {
@@ -23,7 +25,7 @@ if (isProd) {
   } else {
     const port = process.argv[2];
     await mainWindow.loadURL(`http://localhost:${port}/home`);
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   }
 })();
 
