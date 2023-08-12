@@ -1,19 +1,20 @@
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 
 function Home() {
   return (
-    <>
-      <div>
-        <p>
-          ⚡ Electron + Next.js ⚡ -
-          <Link href="/next">Go to next page hello</Link>
-        </p>
-        <img src="/images/logo.png" />
-        <h1 className="text-red-500">hello</h1>
-        <Button>Hello</Button>
+    <div className="h-screen min-h-screen">
+      <div className="bg-zinc-950 h-full">
+        <div>
+          <div className="w-64 h-64 relative">
+            <Image src="/images/logo.svg" alt="⏮️" layout="fill" />
+          </div>
+          <h1 className="text-white">Hello World</h1>
+          <Button>hello</Button>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
