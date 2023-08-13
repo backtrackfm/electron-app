@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "my-nextron-app",
+  "name": "backtrack",
   "description": "My application description",
   "version": "1.0.0",
   "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
@@ -11,14 +11,18 @@
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.2.0",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
     "lucide-react": "^0.265.0",
+    "react-hook-form": "^7.45.4",
     "tailwind-merge": "^1.14.0",
-    "tailwindcss-animate": "^1.0.6"
+    "tailwindcss-animate": "^1.0.6",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/node": "^20.4.10",

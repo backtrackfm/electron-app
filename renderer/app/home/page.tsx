@@ -20,7 +20,9 @@ function Home() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Version your music
           </h1>
-          <Button>Sign in</Button>
+          <Button>
+            <Link href="/auth/signin">Sign In</Link>
+          </Button>
         </div>
       </div>
     </>
