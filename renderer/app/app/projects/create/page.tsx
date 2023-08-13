@@ -1,8 +1,22 @@
+"use client";
+
 import { useContext } from "react";
 import { UserContext } from "../../layout";
+import { DashboardSidebar } from "@/components/dashboard-sidebar";
+import { CreateProjectForm } from "@/components/forms/create-project-form";
 
 export default function CreateProjectPage() {
   const user = useContext(UserContext);
 
-  return <div>{user.name}</div>;
+  return (
+    <div className="h-screen flex">
+      <DashboardSidebar user={user} />
+      <div className="flex flex-col w-full px-20 py-5">
+        <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl my-10">
+          Create Project
+        </h1>
+        <CreateProjectForm />
+      </div>
+    </div>
+  );
 }

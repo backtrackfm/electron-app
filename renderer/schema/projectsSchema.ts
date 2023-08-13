@@ -4,7 +4,7 @@ import { STD_STRING, STRING_ARRAY } from "./schemaUtils";
 export const createProjectSchema = z.object({
   genre: STD_STRING,
   name: STD_STRING,
-  tags: STRING_ARRAY, // would be just be array but fd doesn't allow anything other than strings.
+  tags: STD_STRING, // would be just be array but fd doesn't allow anything other than strings.
   description: STD_STRING.optional(),
 });
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { Project } from "@/lib/types";
 import { ProjectDisplay } from "./displays/project";
 import { Skeleton } from "./ui/skeleton";
 import { useProjects } from "@/hooks/use-projects";
