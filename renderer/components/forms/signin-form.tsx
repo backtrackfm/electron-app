@@ -16,7 +16,8 @@ import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { STD_STRING } from "@/schema/schemaUtils";
-import { cn } from "@/lib/utils";
+import { api, cn } from "@/lib/utils";
+import axios from "axios";
 
 interface SigninFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -38,12 +39,19 @@ export function SigninForm({ className, ...props }: SigninFormProps) {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof signInSchema>) {
+  async function onSubmit(values: z.infer<typeof signInSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
 
     setIsLoading(true);
+
+    await axios.post(api("/users/signin"), values, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      },
+      withCredentials: true,
+    });
 
     setTimeout(() => {
       setIsLoading(false);

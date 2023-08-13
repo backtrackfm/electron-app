@@ -1,20 +1,43 @@
+"use client";
+
 import "../globals.css";
 
-import React from "react";
-import Head from "next/head";
-import Link from "next/link";
+import useSWR from "swr";
+import axios from "axios";
+import { api } from "@/lib/utils";
+import { Loader, LoaderIcon } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Next() {
+const fetcher = (url) =>
+  axios
+    .get(url, {
+      withCredentials: true,
+    })
+    .then((res) => res.data);
+
+export default function Test() {
+  const { data, error, isLoading } = useSWR(
+    "http://localhost:4000/api/users",
+    fetcher
+  );
+
   return (
-    <React.Fragment>
-      <Head>
-        <title>Next - Nextron (with-typescript-tailwindcss)</title>
-      </Head>
+    <>
       <div className="grid grid-col-1 text-2xl w-full text-center">
         <img className="ml-auto mr-auto" src="/images/logo.png" />
-        <span>⚡ Nextron ⚡</span>
+        <span>⚡ Nextron ⚡. Only super cool people can see this</span>
       </div>
-      <div className="mt-1 w-full flex-wrap flex justify-center"></div>
-    </React.Fragment>
+      {!isLoading && data ? (
+        <>
+          <div className="mt-1 w-full flex-wrap flex justify-center">
+            Hello {data && data.data.name}
+          </div>
+        </>
+      ) : (
+        <>
+          <Skeleton className="h-4 w-[250px]" />
+        </>
+      )}
+    </>
   );
 }

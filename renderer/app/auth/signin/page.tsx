@@ -52,21 +52,13 @@ export default function SignIn() {
             </div>
             <SigninForm />
             <p className="px-8 text-center text-sm text-muted-foreground">
-              By clicking continue, you agree to our{" "}
+              Don&apos;t have an account?{" "}
               <Link
-                href="/terms"
+                href="/auth/signup"
                 className="underline underline-offset-4 hover:text-primary"
               >
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link
-                href="/privacy"
-                className="underline underline-offset-4 hover:text-primary"
-              >
-                Privacy Policy
+                Sign up
               </Link>
-              .
             </p>
           </div>
         </div>
