@@ -11,32 +11,11 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { StdReply } from "@/lib/stdReply";
 import { useEffect } from "react";
-
-const fetcher = (url) =>
-  axios
-    .get(url, {
-      withCredentials: true,
-    })
-    .then((res) => res.data);
+import { useUser } from "@/hooks/use-user";
 
 export default function Test() {
-  const {
-    data: res,
-    error,
-    isLoading,
-  } = useSWR<
-    StdReply<{
-      name: string;
-    }>
-  >("http://localhost:4000/api/users", fetcher);
+  const { user, error, isLoading } = useUser();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!res && !isLoading) {
-      toast.error("You must sign in to see this page");
-      return router.push("/home");
-    }
-  }, [res, isLoading]);
 
   return (
     <>
@@ -44,10 +23,10 @@ export default function Test() {
         <img className="ml-auto mr-auto" src="/images/logo.png" />
         <span>BACKTRACK</span>
       </div>
-      {!isLoading && res ? (
+      {!isLoading && user ? (
         <>
           <div className="mt-1 w-full flex-wrap inline-flex justify-center flex-col">
-            Hello {res.data && res.data.name}
+            Hello {user.data && user.data.name}
             <Button
               onClick={() => {
                 axios
