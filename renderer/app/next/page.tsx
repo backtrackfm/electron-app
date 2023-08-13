@@ -14,11 +14,7 @@ export default function Next() {
         <img className="ml-auto mr-auto" src="/images/logo.png" />
         <span>⚡ Nextron ⚡</span>
       </div>
-      <div className="mt-1 w-full flex-wrap flex justify-center">
-        <Link href="/home" className="bg-blue-100 p-4 rounded">
-          Go to home page
-        </Link>
-      </div>
+      <div className="mt-1 w-full flex-wrap flex justify-center"></div>
     </React.Fragment>
   );
 }
