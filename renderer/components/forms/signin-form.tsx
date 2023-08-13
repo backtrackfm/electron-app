@@ -17,7 +17,9 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { STD_STRING } from "@/schema/schemaUtils";
 import { api, cn } from "@/lib/utils";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { StdReply, isStdReply } from "@/lib/stdReply";
+import toast from "react-hot-toast";
 
 interface SigninFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -46,12 +48,17 @@ export function SigninForm({ className, ...props }: SigninFormProps) {
 
     setIsLoading(true);
 
-    await axios.post(api("/users/signin"), values, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      },
-      withCredentials: true,
-    });
+    await axios
+      .post(api("/users/signin"), values, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        },
+        withCredentials: true,
+      })
+      .then((res) => res.data)
+      .catch((err: Error | AxiosError<StdReply>) => {
+        toast.error("Error whilst signing in - check your details");
+      });
 
     setTimeout(() => {
       setIsLoading(false);

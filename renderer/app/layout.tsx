@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import "../styles/globals.css";
 
 export const metadata = {
@@ -15,7 +16,21 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/fiy5ksm.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        <main>{children}</main>
+        <div className="absolute left-0">
+          <Toaster
+            toastOptions={{
+              error: {
+                style: {
+                  backgroundColor: "#212121",
+                  color: "var(--primary)",
+                },
+              },
+            }}
+          />
+        </div>
+      </body>
     </html>
   );
 }
