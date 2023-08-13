@@ -15,7 +15,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { api, cn } from "@/lib/utils";
+import { api, cn, prepare } from "@/lib/utils";
 import { signUpSchema } from "@/schema/usersSchema";
 import {
   Select,
@@ -50,12 +50,16 @@ export function SignupForm({ className, ...props }: SignupFormProps) {
   async function onSubmit(values: z.infer<typeof signUpSchema>) {
     setIsLoading(true);
 
-    axios
-      .post(api("/users"), values, {
-        withCredentials: true,
-      })
-      .then(() => router.push("/signin"))
-      .catch(() => toast.error("Error whilst signing up"));
+    prepare(
+      () =>
+        axios.post(api("/users"), values, {
+          withCredentials: true,
+        }),
+      () => {
+        toast.success("Created user");
+        router.push("/signin");
+      }
+    );
 
     setIsLoading(false);
   }

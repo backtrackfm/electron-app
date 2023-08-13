@@ -39,23 +39,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <UserContext.Provider value={reply.data}>
       <>
         <div className="flex h-screen w-screen">
-          <aside className="flex flex-col w-1/3 min-w-[300px]">
-            {reply.data.name}
-            <Button
-              onClick={() => {
-                axios
-                  .post(api("/users/signout"), null, {
-                    withCredentials: true,
-                  })
-                  .then(() => router.push("/home"))
-                  .catch(() => toast.error("error"));
-              }}
-            >
-              Log out
-            </Button>
-            <Link href="/app/dashboard">Dashboard</Link>
+          <aside className="w-1/3 min-w-[300px] px-4 py-4">
+            <div className="h-full flex flex-col rounded-xl">
+              <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+                {reply.data.name}
+              </h3>
+              <Button
+                onClick={() => {
+                  axios
+                    .post(api("/users/signout"), null, {
+                      withCredentials: true,
+                    })
+                    .then(() => router.push("/home"))
+                    .catch(() => toast.error("error"));
+                }}
+              >
+                Log out
+              </Button>
+              <Link href="/app/dashboard">Dashboard</Link>
+            </div>
           </aside>
-          <div className="w-full overflow-auto">{children}</div>
+          <div className="w-full overflow-auto px-8 py-10">{children}</div>
         </div>
       </>
     </UserContext.Provider>

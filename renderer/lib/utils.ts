@@ -42,36 +42,11 @@ export async function prepare(
   }
 }
 
-// export async function prepare(
-//   apiCall: () => Promise<StdReply>,
-//   successFn?: () => unknown
-// ) {
-//   try {
-//     // do what you want with axios
-//     // axios.get('https://example.com/some-api');
-//     const res = await apiCall();
-//     successFn();
-//     return apiCall();
-//   } catch (error) {
-//     // check if the error was thrown from axios
-//     if (axios.isAxiosError(error)) {
-//       // do something
-//       // or just re-throw the error
-//       // throw error;
-//       console.log(error);
-//       if (error.response) {
-//         const stdReply = error.response.data;
-//         toast.error(stdReply.clientMessage ?? "An error occurred");
-//       } else {
-//         toast.error(error.code ?? "An error occurred");
-//       }
-//     } else {
-//       // do something else
-//       // or creating a new error
-//       // throw new Error("different error than axios");
-//       toast.error("An error occurred");
-//     }
-
-//     return null;
-//   }
-// }
+export const fetcher = async (url: string) =>
+  prepare(() =>
+    axios
+      .get(url, {
+        withCredentials: true,
+      })
+      .then((res) => res.data)
+  );

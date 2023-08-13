@@ -3,8 +3,8 @@ export type User = {
   email: string;
   name: string;
   type: "ARTIST" | "PRODUCER" | "ENGINEER";
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Project = {
@@ -13,7 +13,22 @@ export type Project = {
   name: string;
   tags: string[];
   description?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   coverArtURL?: string;
+};
+
+export type Branch = {
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  description?: string;
+};
+
+export type Version = {
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  tags: string[];
+  description?: string;
 };
