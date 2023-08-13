@@ -23,7 +23,7 @@ function Home() {
           <Button>
             <Link href="/auth/signin">Sign In</Link>
           </Button>
-          <Link href="/next">Next</Link>
+          <Link href="/app/dashboard">Dashboard</Link>
         </div>
       </div>
     </>

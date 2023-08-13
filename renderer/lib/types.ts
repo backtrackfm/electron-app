@@ -6,3 +6,14 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type Project = {
+  id: string;
+  genre: string;
+  name: string;
+  tags: string[];
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  coverArtURL?: string;
+};

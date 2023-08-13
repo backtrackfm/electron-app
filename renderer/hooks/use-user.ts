@@ -1,5 +1,7 @@
 import { StdReply } from "@/lib/stdReply";
-import axios from "axios";
+import { User } from "@/lib/types";
+import { api } from "@/lib/utils";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -13,11 +15,10 @@ const fetcher = (url: string) =>
     .then((res) => res.data);
 
 export function useUser() {
-  const { data, error, isLoading } = useSWR<
-    StdReply<{
-      name: string;
-    }>
-  >("http://localhost:4000/api/users", fetcher);
+  const { data, error, isLoading } = useSWR<StdReply<User>, AxiosError>(
+    api("/users"),
+    fetcher
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -27,5 +28,5 @@ export function useUser() {
     }
   }, [data, isLoading]);
 
-  return { user: data, error, isLoading };
+  return { reply: data, error, isLoading };
 }

@@ -5,7 +5,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -53,7 +52,7 @@ export function SigninForm({ className, ...props }: SigninFormProps) {
         },
         withCredentials: true,
       })
-      .then(() => router.push("/next"))
+      .then(() => router.push("/app/dashboard"))
       .catch(() => toast.error("Error whilst signing in - check your details"));
 
     setIsLoading(false);
