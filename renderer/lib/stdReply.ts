@@ -4,8 +4,8 @@ type StdErrorType = {
   type: "not-found" | "conflict" | "validation" | "unknown" | "auth";
 };
 
-export type StdReply = {
-  data?: unknown;
+export type StdReply<T = unknown> = {
+  data?: T;
   error?: StdErrorType;
   clientMessage?: string; // The message displayed to the client
 };

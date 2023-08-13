@@ -20,6 +20,7 @@ import { api, cn } from "@/lib/utils";
 import axios, { AxiosError } from "axios";
 import { StdReply, isStdReply } from "@/lib/stdReply";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface SigninFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -30,6 +31,7 @@ const signInSchema = z.object({
 
 export function SigninForm({ className, ...props }: SigninFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof signInSchema>>({
@@ -42,27 +44,19 @@ export function SigninForm({ className, ...props }: SigninFormProps) {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof signInSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-
     setIsLoading(true);
 
-    await axios
+    axios
       .post(api("/users/signin"), values, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
         },
         withCredentials: true,
       })
-      .then((res) => res.data)
-      .catch((err: Error | AxiosError<StdReply>) => {
-        toast.error("Error whilst signing in - check your details");
-      });
+      .then(() => router.push("/next"))
+      .catch(() => toast.error("Error whilst signing in - check your details"));
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    setIsLoading(false);
   }
 
   return (

@@ -21,11 +21,9 @@ export default function RootLayout({
         <div className="absolute left-0">
           <Toaster
             toastOptions={{
-              error: {
-                style: {
-                  backgroundColor: "#212121",
-                  color: "var(--primary)",
-                },
+              style: {
+                backgroundColor: "#212121",
+                color: "var(--primary)",
               },
             }}
           />

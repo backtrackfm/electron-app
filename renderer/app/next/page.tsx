@@ -5,8 +5,12 @@ import "../globals.css";
 import useSWR from "swr";
 import axios from "axios";
 import { api } from "@/lib/utils";
-import { Loader, LoaderIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { StdReply } from "@/lib/stdReply";
+import { useEffect } from "react";
 
 const fetcher = (url) =>
   axios
@@ -16,21 +20,46 @@ const fetcher = (url) =>
     .then((res) => res.data);
 
 export default function Test() {
-  const { data, error, isLoading } = useSWR(
-    "http://localhost:4000/api/users",
-    fetcher
-  );
+  const {
+    data: res,
+    error,
+    isLoading,
+  } = useSWR<
+    StdReply<{
+      name: string;
+    }>
+  >("http://localhost:4000/api/users", fetcher);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!res && !isLoading) {
+      toast.error("You must sign in to see this page");
+      return router.push("/home");
+    }
+  }, [res, isLoading]);
 
   return (
     <>
       <div className="grid grid-col-1 text-2xl w-full text-center">
         <img className="ml-auto mr-auto" src="/images/logo.png" />
-        <span>⚡ Nextron ⚡. Only super cool people can see this</span>
+        <span>BACKTRACK</span>
       </div>
-      {!isLoading && data ? (
+      {!isLoading && res ? (
         <>
-          <div className="mt-1 w-full flex-wrap flex justify-center">
-            Hello {data && data.data.name}
+          <div className="mt-1 w-full flex-wrap inline-flex justify-center flex-col">
+            Hello {res.data && res.data.name}
+            <Button
+              onClick={() => {
+                axios
+                  .post(api("/users/signout"), null, {
+                    withCredentials: true,
+                  })
+                  .then(() => router.push("/home"))
+                  .catch(() => toast.error("error"));
+              }}
+            >
+              Log out
+            </Button>
           </div>
         </>
       ) : (

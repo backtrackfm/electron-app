@@ -15,7 +15,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+import { api, cn } from "@/lib/utils";
 import { signUpSchema } from "@/schema/usersSchema";
 import {
   Select,
@@ -26,11 +26,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface SignupFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SignupForm({ className, ...props }: SignupFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof signUpSchema>>({
@@ -43,17 +47,17 @@ export function SignupForm({ className, ...props }: SignupFormProps) {
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof signUpSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-
+  async function onSubmit(values: z.infer<typeof signUpSchema>) {
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    axios
+      .post(api("/users"), values, {
+        withCredentials: true,
+      })
+      .then(() => router.push("/signin"))
+      .catch(() => toast.error("Error whilst signing up"));
+
+    setIsLoading(false);
   }
 
   return (
