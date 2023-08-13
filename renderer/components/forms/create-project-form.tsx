@@ -58,22 +58,22 @@ export function CreateProjectForm({
       formData.append("coverArt", file);
     }
 
-    await axios
-      .post(
-        api("/projects"),
-        {
-          ...values,
-          coverArt: file,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          withCredentials: true,
-        }
-      )
-      .then(() => toast.success("Created project"))
-      .catch((e) => toast.error(e.toString()));
+    // const t = () => axios
+    //   .post(
+    //     api("/projects"),
+    //     {
+    //       ...values,
+    //       coverArt: file,
+    //     },
+    //     {
+    //       headers: {
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //       withCredentials: true,
+    //     }
+    //   )
+    //   .then(() => toast.success("Created project"));
+    // .catch((e) => toast.error(e.toString()));
 
     setIsLoading(false);
   }

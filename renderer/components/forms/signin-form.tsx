@@ -15,7 +15,7 @@ import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { STD_STRING } from "@/schema/schemaUtils";
-import { api, cn } from "@/lib/utils";
+import { api, cn, prepare } from "@/lib/utils";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -44,15 +44,19 @@ export function SigninForm({ className, ...props }: SigninFormProps) {
   async function onSubmit(values: z.infer<typeof signInSchema>) {
     setIsLoading(true);
 
-    axios
-      .post(api("/users/signin"), values, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        },
-        withCredentials: true,
-      })
-      .then(() => router.push("/app/dashboard"))
-      .catch(() => toast.error("Error whilst signing in - check your details"));
+    await prepare(
+      () =>
+        axios.post(api("/users/signin"), values, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          },
+          withCredentials: true,
+        }),
+      () => {
+        toast.success("Logged in");
+        router.push("/app/dashboard");
+      }
+    );
 
     setIsLoading(false);
   }
