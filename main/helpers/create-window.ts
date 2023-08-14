@@ -1,23 +1,40 @@
 import {
-  screen,
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  screen,
 } from "electron";
-import Store from "electron-store";
+import {
+  default as ElectronStore,
+  Schema,
+  default as Store,
+} from "electron-store";
+
+type BacktrackStoreSchema = {
+  winSize: number[];
+};
 
 export default (
   windowName: string,
   options: BrowserWindowConstructorOptions
 ): BrowserWindow => {
+  const schema: Schema<BacktrackStoreSchema> = {
+    winSize: {
+      type: "array",
+      items: {
+        type: "number",
+      },
+    },
+  };
+
   const key = "window-state";
   const name = `window-state-${windowName}`;
-  const store = new Store({ name });
+  const store = new Store({ name, schema });
   const defaultSize = {
     width: options.width,
     height: options.height,
   };
   let state = {};
-  let win;
+  let win: Electron.BrowserWindow;
 
   const restore = () => store.get(key, defaultSize);
 
@@ -70,6 +87,10 @@ export default (
 
   state = ensureVisibleOnSomeDisplay(restore());
 
+  const a = getSizeSettings(store);
+
+  console.log(a);
+
   const browserOptions: BrowserWindowConstructorOptions = {
     ...state,
     ...options,
@@ -78,10 +99,36 @@ export default (
       contextIsolation: false,
       ...options.webPreferences,
     },
+    width: a[0],
+    height: a[1],
   };
   win = new BrowserWindow(browserOptions);
+
+  win.on("resized", () => saveBounds(store, win.getSize()));
 
   win.on("close", saveState);
 
   return win;
 };
+
+function getSizeSettings(store: ElectronStore<BacktrackStoreSchema>): number[] {
+  const defaultSize: number[] = [800, 600];
+
+  const size = store.get("winSize");
+
+  // If the user's already set a size
+  if (size) {
+    return size;
+  }
+
+  store.set("winSize", defaultSize);
+  return defaultSize;
+}
+
+function saveBounds(
+  store: ElectronStore<BacktrackStoreSchema>,
+  newSize: number[]
+) {
+  store.set("winSize", newSize);
+  console.log("Bounds saved", newSize);
+}

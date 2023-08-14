@@ -8,7 +8,6 @@ interface ProjectDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function ProjectDisplay({ project, className }: ProjectDisplayProps) {
-  console.log(project);
   return (
     <Link href={`/app/projects/${project.id}`}>
       <div className={cn("bg-zinc-900 rounded-md", className)}>

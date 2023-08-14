@@ -20,7 +20,6 @@ export function useUser() {
   useEffect(() => {
     if (!data && !error && !isLoading) {
       // toast.error("You must sign in to see this page");
-      // console.log(data, error, isLoading);
 
       return router.push("/home");
     }
