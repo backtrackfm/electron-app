@@ -2,17 +2,32 @@
 
 import { VersionWithPreview } from "@/components/dashboard-versions";
 import Tag from "@/components/tag";
+import { Button } from "@/components/ui/button";
 import { Preview } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Hash, Play } from "lucide-react";
+import { DownloadCloud, Play } from "lucide-react";
 import Link from "next/link";
+import { MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export const columns: ColumnDef<VersionWithPreview>[] = [
+type VersionWithPreviewWithExtras = VersionWithPreview & {
+  number: number;
+};
+
+export const columns: ColumnDef<VersionWithPreviewWithExtras>[] = [
   {
+    accessorKey: "number",
     header: "Number",
     cell: ({ row }) => {
-      return <p>#{row.id}</p>;
+      return <span>#{row.getValue("number")}</span>;
     },
   },
   {
@@ -59,6 +74,43 @@ export const columns: ColumnDef<VersionWithPreview>[] = [
     header: "Created",
     cell: ({ row }) => {
       return formatDate(new Date(row.getValue("createdAt")));
+    },
+  },
+  {
+    accessorKey: "filesURL",
+    enableHiding: false,
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const filesURL: string = row.getValue("filesURL");
+      const name: string = row.getValue("name");
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Link
+                href={filesURL ?? ""}
+                className={cn(
+                  "flex items-center gap-2",
+                  filesURL === undefined && "cursor-not-allowed"
+                )}
+              >
+                <DownloadCloud className="w-4 h-4" /> Download project files
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
     },
   },
 ];

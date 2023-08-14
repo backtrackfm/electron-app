@@ -40,10 +40,17 @@ export function DashboardVersions(props: DashboardVersionsProps) {
     <div>
       <DataTable
         columns={columns}
-        data={reply.data.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )}
+        data={reply.data
+          .sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+          .map((it, i) => {
+            return {
+              ...it,
+              number: reply.data.length - i,
+            };
+          })}
       />
     </div>
   );

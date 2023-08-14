@@ -13,7 +13,7 @@ export function DashboardProjects() {
       {!isLoading && reply && reply.data ? (
         <div className="flex flex-col w-full gap-4">
           {reply.data.map((project) => (
-            <ProjectDisplay project={project} />
+            <ProjectDisplay project={project} key={project.id} />
           ))}
         </div>
       ) : (
