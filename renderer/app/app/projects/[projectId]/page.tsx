@@ -51,7 +51,7 @@ export default function ViewProject({
   }
 
   const handleSelectFolder = async () => {
-    ipcRenderer.send("select-folder", "hello");
+    ipcRenderer.send("select-folder");
 
     ipcRenderer.on("select-folder-return", (event, data) => {
       console.log(data);
