@@ -1,8 +1,8 @@
-import { Version } from "@/lib/types";
+import { VersionWithPreview } from "../dashboard-versions";
 
 interface VersionDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   num: number;
-  version: Version;
+  version: VersionWithPreview;
 }
 
 export function VersionDisplay({ num, version }: VersionDisplayProps) {

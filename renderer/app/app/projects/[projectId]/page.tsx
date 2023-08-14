@@ -57,8 +57,10 @@ export default function ViewProject({
           <SelectValue placeholder="Branch" />
         </SelectTrigger>
         <SelectContent>
-          {reply.data.branches.map((it) => (
-            <SelectItem value={it.name}>{it.name}</SelectItem>
+          {reply.data.branches.map((it, i) => (
+            <SelectItem value={it.name} key={i}>
+              {it.name}
+            </SelectItem>
           ))}
         </SelectContent>
       </Select>

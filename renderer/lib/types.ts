@@ -31,4 +31,15 @@ export type Version = {
   name: string;
   tags: string[];
   description?: string;
+  filesURL?: string;
+  filesStoragePath?: string;
+};
+
+export type Preview = {
+  id: string;
+  createdAt: number;
+  updatedAt: number;
+  title: string;
+  storagePath?: string;
+  fileURL?: string;
 };

@@ -50,3 +50,29 @@ export const fetcher = async (url: string) =>
       })
       .then((res) => res.data)
   );
+
+export function formatDate(date: Date): string {
+  const month = date.getMonth() + 1; // Months are 0-indexed, so we add 1
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month}/${day}/${year}`;
+}
+
+const colors = [
+  "bg-lime-500",
+  "bg-cyan-500",
+  "bg-violet-500",
+  "bg-purple-500",
+  "bg-yellow-500",
+  "bg-orange-500",
+  "bg-red-500",
+];
+
+export function getStringColor(input: string): string {
+  const hash = input.split("").reduce((acc, char) => {
+    return (acc + char.charCodeAt(0)) % colors.length;
+  }, 0);
+
+  return colors[hash];
+}
