@@ -3,7 +3,7 @@
 import { StdReply } from "@/lib/stdReply";
 import { Branch, Project } from "@/lib/types";
 import { api, fetcher } from "@/lib/utils";
-import { Loader } from "lucide-react";
+import { FolderHeart, Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
 import {
@@ -13,11 +13,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DashboardVersions } from "@/components/dashboard-versions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ipcRenderer } from "electron";
+import toast from "react-hot-toast";
 
 export default function ViewProject({
   params,
@@ -26,6 +27,18 @@ export default function ViewProject({
 }) {
   const router = useRouter();
   const [branch, setBranch] = useState<string>("main");
+  const [projectSpace, setProjectSpace] = useState<string>("");
+
+  // Project space effect
+  useEffect(() => {
+    let id: string;
+
+    if (projectSpace.length === 0) {
+      id = toast.error("Project space is not selected");
+    } else {
+      toast.dismiss(id);
+    }
+  }, [projectSpace]);
 
   // TODO: Fix typings
   const {
@@ -36,6 +49,8 @@ export default function ViewProject({
     api(`/projects/${params.projectId}`),
     fetcher
   );
+
+  console.log(reply);
 
   if (isLoading) {
     return <Loader className="animate-spin" />;
@@ -55,6 +70,7 @@ export default function ViewProject({
 
     ipcRenderer.on("select-folder-return", (event, data) => {
       console.log(data);
+      setProjectSpace(data);
     });
   };
 
@@ -66,7 +82,7 @@ export default function ViewProject({
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
         {reply.data.description}
       </h3>
-      <div>
+      <div className="flex gap-2">
         <Select onValueChange={(val) => setBranch(val)} value={branch}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Branch" />
@@ -79,7 +95,16 @@ export default function ViewProject({
             ))}
           </SelectContent>
         </Select>
-        <Button onClick={() => handleSelectFolder()}></Button>
+        <Button
+          onClick={() => handleSelectFolder()}
+          variant={projectSpace.length === 0 ? "destructive" : "outline"}
+        >
+          <FolderHeart className="w-4 h-4 mr-2" />
+          Select project space{" "}
+          {projectSpace &&
+            projectSpace.length > 0 &&
+            `(currently ${projectSpace.toString().split("/").at(-1)})`}
+        </Button>
       </div>
       <DashboardVersions branchName={branch} projectId={params.projectId} />
       <Link href={`/app/projects/${params.projectId}/${branch}/create`}>
