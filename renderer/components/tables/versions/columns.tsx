@@ -42,8 +42,8 @@ export const columns: ColumnDef<VersionWithPreviewWithExtras>[] = [
 
       return (
         <div className="inline-flex">
-          {tags.map((it) => (
-            <Tag name={it} />
+          {tags.map((it, i) => (
+            <Tag key={i} name={it} />
           ))}
         </div>
       );

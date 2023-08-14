@@ -17,6 +17,7 @@ import { useState } from "react";
 import { DashboardVersions } from "@/components/dashboard-versions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ipcRenderer } from "electron";
 
 export default function ViewProject({
   params,
@@ -49,6 +50,14 @@ export default function ViewProject({
     return null;
   }
 
+  const handleSelectFolder = async () => {
+    ipcRenderer.send("select-folder", "hello");
+
+    ipcRenderer.on("select-folder-return", (event, data) => {
+      console.log(data);
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -70,6 +79,7 @@ export default function ViewProject({
             ))}
           </SelectContent>
         </Select>
+        <Button onClick={() => handleSelectFolder()}></Button>
       </div>
       <DashboardVersions branchName={branch} projectId={params.projectId} />
       <Link href={`/app/projects/${params.projectId}/${branch}/create`}>
