@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { STD_STRING, STRING_ARRAY } from "./schemaUtils";
+import { STD_STRING } from "./schemaUtils";
 
 export const createVersionSchema = z.object({
   name: STD_STRING,
-  tags: STRING_ARRAY.optional(),
+  tags: STD_STRING.optional(),
   description: STD_STRING.optional(),
 });
 
