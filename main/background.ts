@@ -13,7 +13,7 @@ if (isProd) {
 (async () => {
   await app.whenReady();
 
-  const mainWindow = createWindow("backtrack", {
+  const mainWindow = await createWindow("backtrack", {
     width: 1000,
     height: 600,
     minHeight: 600,

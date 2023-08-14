@@ -11,17 +11,41 @@ import {
 
 type BacktrackStoreSchema = {
   winSize: number[];
+  persistedCookies: Electron.Cookie[];
 };
 
-export default (
+export default async (
   windowName: string,
   options: BrowserWindowConstructorOptions
-): BrowserWindow => {
+): Promise<BrowserWindow> => {
   const schema: Schema<BacktrackStoreSchema> = {
     winSize: {
       type: "array",
       items: {
         type: "number",
+      },
+    },
+    persistedCookies: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          domain: { type: "string" },
+          expirationDate: { type: "number" },
+          hostOnly: { type: "boolean" },
+          httpOnly: { type: "boolean" },
+          name: { type: "string" },
+          path: { type: "string" },
+          sameSite: {
+            type: "string",
+            enum: ["unspecified", "no_restriction", "lax", "strict"],
+          },
+          secure: { type: "boolean" },
+          session: { type: "boolean" },
+          value: { type: "string" },
+        },
+        required: ["name", "sameSite", "value"],
+        additionalProperties: false,
       },
     },
   };
@@ -78,18 +102,22 @@ export default (
     return windowState;
   };
 
-  const saveState = () => {
+  const saveState = async () => {
     if (!win.isMinimized() && !win.isMaximized()) {
       Object.assign(state, getCurrentPosition());
     }
     store.set(key, state);
+
+    const cookies = await win.webContents.session.cookies.get({
+      name: "auth-session-cookie",
+    });
+
+    store.set("persistedCookies", cookies);
   };
 
   state = ensureVisibleOnSomeDisplay(restore());
 
-  const a = getSizeSettings(store);
-
-  console.log(a);
+  const resolution = getSizeSettings(store);
 
   const browserOptions: BrowserWindowConstructorOptions = {
     ...state,
@@ -99,10 +127,18 @@ export default (
       contextIsolation: false,
       ...options.webPreferences,
     },
-    width: a[0],
-    height: a[1],
+    width: resolution[0],
+    height: resolution[1],
   };
   win = new BrowserWindow(browserOptions);
+
+  const storedCookies = store.get("persistedCookies");
+
+  const promises = storedCookies.map((it) =>
+    win.webContents.session.cookies.set({ ...it, url: "http://localhost:8888" })
+  );
+
+  await Promise.all(promises);
 
   win.on("resized", () => saveBounds(store, win.getSize()));
 
@@ -130,5 +166,4 @@ function saveBounds(
   newSize: number[]
 ) {
   store.set("winSize", newSize);
-  console.log("Bounds saved", newSize);
 }
