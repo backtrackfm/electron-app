@@ -1,6 +1,8 @@
 import { app, dialog, ipcMain } from "electron";
 import serve from "electron-serve";
+import fs from "fs";
 import os from "os";
+import path from "path";
 import { createWindow } from "./helpers";
 
 const isProd: boolean = process.env.NODE_ENV === "production";
@@ -55,7 +57,6 @@ ipcMain.on("select-folder", (event, arg) => {
         properties: ["openDirectory"],
       })
       .then((result) => {
-        console.log(result.filePaths);
         if (result)
           mainWindow.webContents.send("select-folder-return", result.filePaths);
       })
@@ -64,3 +65,42 @@ ipcMain.on("select-folder", (event, arg) => {
       });
   }
 });
+
+const getModifiedFiles = (folderPath: string, sinceDate: Date) => {
+  try {
+    const files = fs.readdirSync(folderPath);
+    const modifiedFiles = [];
+
+    files.forEach((file) => {
+      const filePath = path.join(folderPath, file);
+      const stats = fs.statSync(filePath);
+      const fileDate = stats.mtime;
+
+      if (fileDate > sinceDate) {
+        modifiedFiles.push({
+          path: filePath,
+          stats: stats,
+        });
+      }
+    });
+
+    return modifiedFiles;
+  } catch (error) {
+    return [];
+  }
+};
+
+ipcMain.on(
+  "spaces:get-changes-made",
+  (event, path: string, lastUpdate: Date) => {
+    try {
+      const modifiedFiles = getModifiedFiles(path, lastUpdate);
+      mainWindow.webContents.send(
+        "spaces:get-changes-made/return",
+        modifiedFiles
+      );
+    } catch (error) {
+      mainWindow.webContents.send("spaces:get-changes-made/return", []);
+    }
+  }
+);

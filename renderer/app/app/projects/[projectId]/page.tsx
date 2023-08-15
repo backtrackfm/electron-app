@@ -17,9 +17,9 @@ import { useEffect, useState } from "react";
 import { DashboardVersions } from "@/components/dashboard-versions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ipcRenderer } from "electron";
+import { ipcMain, ipcRenderer } from "electron";
 import toast from "react-hot-toast";
-import { saveProjectWorkspace } from "@/lib/localstorage-utils";
+import { getProjectSpace, saveProjectSpace } from "@/lib/localstorage-utils";
 
 export default function ViewProject({
   params,
@@ -28,7 +28,9 @@ export default function ViewProject({
 }) {
   const router = useRouter();
   const [branch, setBranch] = useState<string>("main");
-  const [projectSpace, setProjectSpace] = useState<string>("");
+  const [projectSpace, setProjectSpace] = useState<string>(
+    getProjectSpace(params.projectId).spacePath
+  );
 
   // Project space effect
   useEffect(() => {
@@ -75,10 +77,7 @@ export default function ViewProject({
       }
 
       setProjectSpace(data);
-      // TODO: Multiple projects
-      // localStorage.setItem("projectWorkspace", data);
-
-      saveProjectWorkspace(params.projectId, path);
+      saveProjectSpace(params.projectId, path);
     });
   };
 

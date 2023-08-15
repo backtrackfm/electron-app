@@ -1,48 +1,56 @@
-const projectWorkspaceKey = "project-workspace";
-type ProjectWorkspace = {
+const projectSpacesKey = "project-spaces";
+type ProjectSpace = {
   projectId: string;
-  workspacePath: string;
+  spacePath: string;
 };
 
-export function getAllProjectWorkspaces(): ProjectWorkspace[] | null {
-  return JSON.parse(localStorage.getItem(projectWorkspaceKey));
+export function getAllProjectSpaces(): ProjectSpace[] | null {
+  return JSON.parse(localStorage.getItem(projectSpacesKey));
 }
 
-export function getProjectWorkspace(
-  projectId: string
-): ProjectWorkspace | null {
-  const workspaces = getAllProjectWorkspaces();
+export function getProjectSpace(projectId: string): ProjectSpace {
+  const spaces = getAllProjectSpaces();
 
-  const matches = workspaces.filter((it) => it.projectId === projectId);
+  if (!spaces) {
+    return {
+      projectId,
+      spacePath: "",
+    };
+  }
+
+  const matches = spaces.filter((it) => it.projectId === projectId);
 
   if (!matches || matches.length === 0) {
-    return null;
+    return {
+      projectId,
+      spacePath: "",
+    };
   }
 
   return matches[0];
 }
 
-export function saveProjectWorkspace(projectId: string, path: string) {
-  let workspaces = getAllProjectWorkspaces();
+export function saveProjectSpace(projectId: string, path: string) {
+  let spaces = getAllProjectSpaces();
 
-  const newWorkspace: ProjectWorkspace = {
+  const newSpace: ProjectSpace = {
     projectId,
-    workspacePath: path,
+    spacePath: path,
   };
 
-  if (!workspaces) {
-    // create new workspaces
-    workspaces = [];
-    workspaces.push(newWorkspace);
+  if (!spaces) {
+    // create new spaces
+    spaces = [];
+    spaces.push(newSpace);
 
-    localStorage.setItem(projectWorkspaceKey, JSON.stringify(workspaces));
+    localStorage.setItem(projectSpacesKey, JSON.stringify(spaces));
   } else {
     // ^ instead of doing that, do this:
-    const newWorkspaces = workspaces.filter((it) => it.projectId !== projectId);
+    const newSpaces = spaces.filter((it) => it.projectId !== projectId);
 
-    newWorkspaces.push(newWorkspace);
+    newSpaces.push(newSpace);
 
     // Save this
-    localStorage.setItem(projectWorkspaceKey, JSON.stringify(newWorkspaces));
+    localStorage.setItem(projectSpacesKey, JSON.stringify(spaces));
   }
 }

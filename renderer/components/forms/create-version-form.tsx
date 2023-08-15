@@ -28,6 +28,8 @@ import JSZip from "jszip";
 interface CreateVersionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   projectId: string;
   branchId: string;
+  disabled: boolean;
+  modifiedFiles: File[];
 }
 
 export function CreateVersionForm({
@@ -35,7 +37,7 @@ export function CreateVersionForm({
   ...props
 }: CreateVersionFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [files, setFiles] = useState<FileList>();
+  // const [files, setFiles] = useState<File[]>();
   const router = useRouter();
 
   // 1. Define your form.
@@ -50,6 +52,8 @@ export function CreateVersionForm({
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof createProjectSchema>) {
+    if (props.modifiedFiles.length === 0) return;
+
     setIsLoading(true);
 
     const formData = new FormData();
@@ -61,8 +65,8 @@ export function CreateVersionForm({
     // Zip files
     const zip = new JSZip();
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+    for (let i = 0; i < props.modifiedFiles.length; i++) {
+      const file = props.modifiedFiles[i];
 
       const fileData = await new Response(file).arrayBuffer();
 
@@ -99,7 +103,12 @@ export function CreateVersionForm({
 
   return (
     <Form {...form}>
-      <Input type="file" multiple onChange={(e) => setFiles(e.target.files)} />
+      <p>Changes</p>
+      <ul>
+        {props.modifiedFiles.map((it, i) => (
+          <li key={i}>{it.path}</li>
+        ))}
+      </ul>
 
       <form
         onSubmit={form.handleSubmit(onSubmit)}
@@ -157,7 +166,9 @@ export function CreateVersionForm({
             </FormItem>
           )}
         />
-        <Button type="submit">Create version</Button>
+        <Button type="submit" disabled={props.disabled}>
+          Create version
+        </Button>
       </form>
     </Form>
   );
