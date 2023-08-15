@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ipcRenderer } from "electron";
 import toast from "react-hot-toast";
+import { saveProjectWorkspace } from "@/lib/localstorage-utils";
 
 export default function ViewProject({
   params,
@@ -50,8 +51,6 @@ export default function ViewProject({
     fetcher
   );
 
-  console.log(reply);
-
   if (isLoading) {
     return <Loader className="animate-spin" />;
   }
@@ -69,8 +68,17 @@ export default function ViewProject({
     ipcRenderer.send("select-folder");
 
     ipcRenderer.on("select-folder-return", (event, data) => {
-      console.log(data);
+      let path = "";
+
+      if (data && data.length > 0) {
+        path = data[0];
+      }
+
       setProjectSpace(data);
+      // TODO: Multiple projects
+      // localStorage.setItem("projectWorkspace", data);
+
+      saveProjectWorkspace(params.projectId, path);
     });
   };
 
