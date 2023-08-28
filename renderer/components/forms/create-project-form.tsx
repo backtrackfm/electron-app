@@ -1,7 +1,14 @@
 "use client";
 
+import { api, cn, prepare } from "@/lib/utils";
+import { createProjectSchema } from "@/schema/projectsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -11,17 +18,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { STD_STRING } from "@/schema/schemaUtils";
-import { api, cn } from "@/lib/utils";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { createProjectSchema } from "@/schema/projectsSchema";
-import { Label } from "../ui/label";
-import Image from "next/image";
 
 interface CreateProjectFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -58,22 +54,21 @@ export function CreateProjectForm({
       formData.append("coverArt", file);
     }
 
-    // const t = () => axios
-    //   .post(
-    //     api("/projects"),
-    //     {
-    //       ...values,
-    //       coverArt: file,
-    //     },
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //       withCredentials: true,
-    //     }
-    //   )
-    //   .then(() => toast.success("Created project"));
-    // .catch((e) => toast.error(e.toString()));
+    prepare(() =>
+      axios.post(
+        api("/projects"),
+        {
+          ...values,
+          coverArt: file,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      )
+    );
 
     setIsLoading(false);
   }

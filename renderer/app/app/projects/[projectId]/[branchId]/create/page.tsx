@@ -3,8 +3,12 @@
 import { CreateVersionForm } from "@/components/forms/create-version-form";
 import { Button } from "@/components/ui/button";
 import { getProjectSpace } from "@/lib/localstorage-utils";
+import { StdReply } from "@/lib/stdReply";
+import { Version } from "@/lib/types";
+import { api, fetcher } from "@/lib/utils";
 import { ipcRenderer } from "electron";
 import { useState } from "react";
+import useSWR from "swr";
 
 export default function CreateVersionPage({
   params,
@@ -18,12 +22,28 @@ export default function CreateVersionPage({
     getProjectSpace(params.projectId).spacePath
   );
   const [modifiedFiles, setModifiedFiles] = useState<File[]>([]);
+  const {
+    data: reply,
+    error,
+    isLoading,
+  } = useSWR<StdReply<Version>>(
+    api(
+      `/projects/${params.projectId}/branches/${params.branchId}/versions/latest`
+    ),
+    fetcher
+  );
+
+  if (!reply) {
+    return null;
+  }
 
   const handleRefresh = async () => {
+    if (!reply) return;
+
     ipcRenderer.send(
       "spaces:get-changes-made",
       projectSpace,
-      new Date("1-1-19")
+      reply.data.createdAt
     );
 
     ipcRenderer.on(
