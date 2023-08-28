@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { TagInput } from "../tag-input";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -131,7 +132,8 @@ export function CreateProjectForm({
             <FormItem>
               <FormLabel>Tags</FormLabel>
               <FormControl>
-                <Input placeholder="Tags" {...field} />
+                {/* <Input placeholder="Tags" {...field} /> */}
+                <TagInput />
               </FormControl>
               <FormMessage />
             </FormItem>
