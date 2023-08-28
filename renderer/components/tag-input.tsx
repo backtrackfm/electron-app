@@ -1,11 +1,19 @@
+"use client";
+
 import React, { useState } from "react";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 
 const maxTags = 5;
 
-export function TagInput() {
-  const [tags, setTags] = useState<string[]>([]);
+export function TagInput({
+  tags,
+  setTags,
+}: {
+  tags: string[];
+  setTags(newTags: string[]): void;
+}) {
+  // const [tags, setTags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +28,7 @@ export function TagInput() {
   };
 
   const addTagsFromInput = () => {
-    if (tags.length >= 5) return;
+    if (tags.length >= maxTags) return;
 
     const newTags = inputValue
       .split(",")

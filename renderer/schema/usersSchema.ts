@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PASSWORD, STD_STRING } from "./schemaUtils";
+import { PASSWORD, STD_STRING, blankable } from "./schemaUtils";
 
 export const signUpSchema = z.object({
   email: STD_STRING.email(),
@@ -10,8 +10,8 @@ export const signUpSchema = z.object({
 
 export const editUserSchema = z.object({
   password: PASSWORD,
-  email: STD_STRING.email().optional(),
-  name: STD_STRING.max(16).optional(),
-  newPassword: PASSWORD.optional(),
+  email: blankable(STD_STRING.email()),
+  name: blankable(STD_STRING.max(16)),
+  newPassword: blankable(PASSWORD),
   type: z.enum(["ARTIST", "PRODUCER", "ENGINEER"]).default("ARTIST"),
 });

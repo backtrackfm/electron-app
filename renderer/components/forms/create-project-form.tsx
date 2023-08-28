@@ -37,11 +37,10 @@ export function CreateProjectForm({
       name: "",
       genre: "",
       description: "",
-      tags: "",
+      tags: [],
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof createProjectSchema>) {
     setIsLoading(true);
 
@@ -59,7 +58,7 @@ export function CreateProjectForm({
       axios.post(
         api("/projects"),
         {
-          ...values,
+          body: JSON.stringify(values),
           coverArt: file,
         },
         {
@@ -132,8 +131,7 @@ export function CreateProjectForm({
             <FormItem>
               <FormLabel>Tags</FormLabel>
               <FormControl>
-                {/* <Input placeholder="Tags" {...field} /> */}
-                <TagInput />
+                <TagInput tags={field.value} setTags={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

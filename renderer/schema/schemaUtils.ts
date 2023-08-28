@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { ZodType, z } from "zod";
 
 export const STD_STRING = z.string().min(3);
 export const PASSWORD = z.string().min(6);
@@ -28,3 +28,7 @@ export const STRING_ARRAY = z
       throw new Error("Failed to parse JSON-formatted string array");
     }
   });
+
+export const blankable = (type: ZodType) => {
+  return z.union([type, z.literal("")]).optional();
+};
