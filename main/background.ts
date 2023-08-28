@@ -71,15 +71,20 @@ const getModifiedFiles = (folderPath: string, sinceDate: Date) => {
     const files = fs.readdirSync(folderPath);
     const modifiedFiles = [];
 
-    files.forEach((file) => {
+    console.log(files.length);
+
+    files.forEach((file, i) => {
       const filePath = path.join(folderPath, file);
       const stats = fs.statSync(filePath);
-      const fileDate = stats.mtime;
 
-      if (fileDate > sinceDate) {
+      // make sure that this path is a file & that the modified time is over now
+      if (stats.isFile() && stats.mtime > sinceDate) {
+        const f = fs.readFileSync(filePath);
+
         modifiedFiles.push({
           path: filePath,
           stats: stats,
+          file: f,
         });
       }
     });

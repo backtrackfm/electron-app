@@ -1,5 +1,6 @@
 "use client";
 
+import { SystemFile } from "@/app/app/projects/[projectId]/[branchId]/create/page";
 import { api, cn, prepare } from "@/lib/utils";
 import { createProjectSchema } from "@/schema/projectsSchema";
 import { createVersionSchema } from "@/schema/versionsSchema";
@@ -11,6 +12,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
+import { TagInput } from "../tag-input";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -26,7 +28,7 @@ interface CreateVersionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   projectId: string;
   branchId: string;
   disabled: boolean;
-  modifiedFiles: File[];
+  modifiedFiles: SystemFile[];
 }
 
 export function CreateVersionForm({
@@ -43,7 +45,7 @@ export function CreateVersionForm({
     defaultValues: {
       name: "",
       description: "",
-      tags: "",
+      tags: [],
     },
   });
 
@@ -55,19 +57,16 @@ export function CreateVersionForm({
 
     const formData = new FormData();
 
-    for (const [key, value] of Object.entries(values)) {
-      formData.append(key, value);
-    }
+    formData.append("body", JSON.stringify(values));
 
     // Zip files
     const zip = new JSZip();
 
     for (let i = 0; i < props.modifiedFiles.length; i++) {
       const file = props.modifiedFiles[i];
+      const fileData = await new Response(file.file).arrayBuffer();
 
-      const fileData = await new Response(file).arrayBuffer();
-
-      zip.file(file.name, fileData);
+      zip.file(file.file.name, fileData);
     }
 
     const zipBlob = await zip.generateAsync({
@@ -103,13 +102,6 @@ export function CreateVersionForm({
 
   return (
     <Form {...form}>
-      <p>Changes</p>
-      <ul>
-        {props.modifiedFiles.map((it, i) => (
-          <li key={i}>{it.path}</li>
-        ))}
-      </ul>
-
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn("flex flex-col gap-4", className)}
@@ -121,20 +113,7 @@ export function CreateVersionForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Real" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Input placeholder="Optional song description" {...field} />
+                <Input placeholder="Bell" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -160,7 +139,7 @@ export function CreateVersionForm({
             <FormItem>
               <FormLabel>Tags</FormLabel>
               <FormControl>
-                <Input placeholder="Tags" {...field} />
+                <TagInput tags={field.value} setTags={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

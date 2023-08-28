@@ -86,3 +86,17 @@ export function getStringColor(input: string): string {
 
   return colors[hash];
 }
+
+export function formatTimeDuration(durationInMs: number) {
+  if (durationInMs < 1000) {
+    return `${durationInMs}ms`;
+  } else if (durationInMs < 60000) {
+    return `${Math.floor(durationInMs / 1000)}s`;
+  } else if (durationInMs < 3600000) {
+    return `${Math.floor(durationInMs / 60000)}m`;
+  } else if (durationInMs < 86400000) {
+    return `${Math.floor(durationInMs / 3600000)}h`;
+  } else {
+    return `${Math.floor(durationInMs / 86400000)}d`;
+  }
+}
