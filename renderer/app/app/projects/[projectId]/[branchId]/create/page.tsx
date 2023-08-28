@@ -30,7 +30,7 @@ export default function CreateVersionPage({
     api(
       `/projects/${params.projectId}/branches/${params.branchId}/versions/latest`
     ),
-    fetcher
+    (url) => fetcher(url, false) // don't show messages
   );
 
   if (!reply) {

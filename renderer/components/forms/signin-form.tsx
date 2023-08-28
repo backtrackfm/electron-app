@@ -1,7 +1,15 @@
 "use client";
 
+import { api, cn, prepare } from "@/lib/utils";
+import { STD_STRING } from "@/schema/schemaUtils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -11,14 +19,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { STD_STRING } from "@/schema/schemaUtils";
-import { api, cn, prepare } from "@/lib/utils";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
 interface SigninFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -52,9 +52,11 @@ export function SigninForm({ className, ...props }: SigninFormProps) {
           },
           withCredentials: true,
         }),
-      () => {
-        toast.success("Logged in");
-        router.push("/app/dashboard");
+      {
+        successFn: () => {
+          toast.success("Signed in");
+          router.push("/app/dashboard");
+        },
       }
     );
 

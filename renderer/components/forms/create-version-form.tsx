@@ -1,7 +1,17 @@
 "use client";
 
+import { api, cn, prepare } from "@/lib/utils";
+import { createProjectSchema } from "@/schema/projectsSchema";
+import { createVersionSchema } from "@/schema/versionsSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import JSZip from "jszip";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -11,19 +21,6 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import React, { useState } from "react";
-import { STD_STRING } from "@/schema/schemaUtils";
-import { api, cn, prepare } from "@/lib/utils";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { createProjectSchema } from "@/schema/projectsSchema";
-import { Label } from "../ui/label";
-import Image from "next/image";
-import { createVersionSchema } from "@/schema/versionsSchema";
-import JSZip from "jszip";
 
 interface CreateVersionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   projectId: string;
@@ -93,8 +90,11 @@ export function CreateVersionForm({
             withCredentials: true,
           }
         ),
-      () => {
-        toast.success("Created version");
+      {
+        successFn: () => {
+          router.push(`/app/projects/${props.projectId}`);
+          toast.success("Created version");
+        },
       }
     );
 

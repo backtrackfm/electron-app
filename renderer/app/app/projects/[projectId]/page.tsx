@@ -1,11 +1,7 @@
 "use client";
 
-import { StdReply } from "@/lib/stdReply";
-import { Branch, Project } from "@/lib/types";
-import { api, fetcher } from "@/lib/utils";
-import { FolderHeart, Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
-import useSWR from "swr";
+import { DashboardVersions } from "@/components/dashboard-versions";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -13,13 +9,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
-import { DashboardVersions } from "@/components/dashboard-versions";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { ipcMain, ipcRenderer } from "electron";
-import toast from "react-hot-toast";
 import { getProjectSpace, saveProjectSpace } from "@/lib/localstorage-utils";
+import { StdReply } from "@/lib/stdReply";
+import { Branch, Project } from "@/lib/types";
+import { api, fetcher } from "@/lib/utils";
+import { ipcRenderer } from "electron";
+import { FolderHeart, Loader } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import useSWR from "swr";
 
 export default function ViewProject({
   params,
@@ -27,7 +27,7 @@ export default function ViewProject({
   params: { projectId: string };
 }) {
   const router = useRouter();
-  const [branch, setBranch] = useState<string>("main");
+  const [branch, setBranch] = useState<string>("original");
   const [projectSpace, setProjectSpace] = useState<string>(
     getProjectSpace(params.projectId).spacePath
   );

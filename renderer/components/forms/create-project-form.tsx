@@ -7,6 +7,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
 import { TagInput } from "../tag-input";
 import { Button } from "../ui/button";
@@ -54,20 +55,27 @@ export function CreateProjectForm({
       formData.append("coverArt", file);
     }
 
-    prepare(() =>
-      axios.post(
-        api("/projects"),
-        {
-          body: JSON.stringify(values),
-          coverArt: file,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
+    prepare(
+      () =>
+        axios.post(
+          api("/projects"),
+          {
+            body: JSON.stringify(values),
+            coverArt: file,
           },
-          withCredentials: true,
-        }
-      )
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            withCredentials: true,
+          }
+        ),
+      {
+        successFn: () => {
+          router.push("/app/dashboard");
+          toast.success("Created project");
+        },
+      }
     );
 
     setIsLoading(false);

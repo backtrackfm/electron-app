@@ -1,7 +1,15 @@
 "use client";
 
+import { api, cn, prepare } from "@/lib/utils";
+import { signUpSchema } from "@/schema/usersSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -12,23 +20,13 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { api, cn, prepare } from "@/lib/utils";
-import { signUpSchema } from "@/schema/usersSchema";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 
 interface SignupFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -55,9 +53,11 @@ export function SignupForm({ className, ...props }: SignupFormProps) {
         axios.post(api("/users"), values, {
           withCredentials: true,
         }),
-      () => {
-        toast.success("Created user");
-        router.push("/signin");
+      {
+        successFn: () => {
+          toast.success("Signed up");
+          router.push("/signin");
+        },
       }
     );
 

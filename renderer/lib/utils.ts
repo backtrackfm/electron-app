@@ -13,13 +13,16 @@ export function api(path: string) {
 
 export async function prepare(
   fn: () => Promise<AxiosResponse>,
-  successFn?: () => any
+  opts?: {
+    successFn?: () => any;
+    showMessages?: boolean;
+  }
 ): Promise<AxiosResponse> {
   try {
     const res = await fn();
     // if we get here, we know it's a success
-    if (successFn) {
-      successFn();
+    if (opts.successFn) {
+      opts.successFn();
     }
 
     return res;
@@ -27,28 +30,33 @@ export async function prepare(
     // check if the error was thrown from axios
     console.log(error);
 
-    if (axios.isAxiosError(error)) {
-      if (error.response) {
-        const stdReply = error.response.data;
-        toast.error(stdReply.clientMessage ?? "An error occurred!");
+    // If showMessages is not provided, then we assume we should
+    if (opts.showMessages ?? true) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          const stdReply = error.response.data;
+          toast.error(stdReply.clientMessage ?? "An error occurred!");
+        } else {
+          toast.error(error.code ?? "An error occurred!!");
+        }
       } else {
-        toast.error(error.code ?? "An error occurred!!");
+        toast.error("An error occurred!!!");
       }
-    } else {
-      toast.error("An error occurred!!!");
     }
 
     return null;
   }
 }
 
-export const fetcher = async (url: string) =>
-  prepare(() =>
-    axios
-      .get(url, {
-        withCredentials: true,
-      })
-      .then((res) => res.data)
+export const fetcher = async (url: string, showMessages: boolean = true) =>
+  prepare(
+    () =>
+      axios
+        .get(url, {
+          withCredentials: true,
+        })
+        .then((res) => res.data),
+    {}
   );
 
 export function formatDate(date: Date): string {
