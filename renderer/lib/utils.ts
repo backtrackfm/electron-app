@@ -11,17 +11,19 @@ export function api(path: string) {
   return `http://localhost:4000/api${path}`;
 }
 
+type PrepareOpts = {
+  successFn: () => any;
+  showMessages: boolean;
+};
+
 export async function prepare(
   fn: () => Promise<AxiosResponse>,
-  opts?: {
-    successFn?: () => any;
-    showMessages?: boolean;
-  }
+  opts?: Partial<PrepareOpts>
 ): Promise<AxiosResponse> {
   try {
     const res = await fn();
     // if we get here, we know it's a success
-    if (opts.successFn) {
+    if (opts && opts.successFn) {
       opts.successFn();
     }
 
@@ -31,7 +33,7 @@ export async function prepare(
     console.log(error);
 
     // If showMessages is not provided, then we assume we should
-    if (opts.showMessages ?? true) {
+    if (opts && opts.showMessages) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
           const stdReply = error.response.data;

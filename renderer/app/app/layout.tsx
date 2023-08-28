@@ -16,6 +16,7 @@ export const UserContext = createContext<User | null>(null);
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { reply, error, isLoading } = useUser();
+  console.log(error);
 
   if (!reply) {
     if (!isLoading) {
