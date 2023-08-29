@@ -25,6 +25,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "csstype": "^3.1.2",
+    "electron-dl": "^3.5.0",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
     "jszip": "^3.10.1",

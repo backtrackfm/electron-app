@@ -2,11 +2,9 @@ import { StdReply } from "@/lib/stdReply";
 import { Preview, Version } from "@/lib/types";
 import { api, fetcher } from "@/lib/utils";
 import { Loader } from "lucide-react";
-import { useState } from "react";
 import useSWR from "swr";
-import { VersionDisplay } from "./displays/version";
+import { getColumns } from "./tables/versions/columns";
 import { DataTable } from "./tables/versions/data-table";
-import { columns } from "./tables/versions/columns";
 
 interface DashboardVersionsProps extends React.HTMLAttributes<HTMLDivElement> {
   branchName: string;
@@ -39,7 +37,7 @@ export function DashboardVersions(props: DashboardVersionsProps) {
   return (
     <div>
       <DataTable
-        columns={columns}
+        columns={getColumns(props.projectId)}
         data={reply.data
           .sort(
             (a, b) =>

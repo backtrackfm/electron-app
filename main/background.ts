@@ -1,4 +1,5 @@
 import { app, dialog, ipcMain } from "electron";
+import { download } from "electron-dl";
 import serve from "electron-serve";
 import fs from "fs";
 import os from "os";
@@ -109,3 +110,19 @@ ipcMain.on(
     }
   }
 );
+
+type ProjectFilesDownloadInfo = {
+  url: string;
+  properties: {
+    directory?: string;
+  };
+};
+
+ipcMain.on("projectFiles:download", (event, info: ProjectFilesDownloadInfo) => {
+  download(mainWindow, info.url, info.properties).then((dl) =>
+    mainWindow.webContents.send(
+      "projectFiles:download/success",
+      dl.getSavePath()
+    )
+  );
+});
