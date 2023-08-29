@@ -78,6 +78,8 @@ export default function ViewProject({
 
       setProjectSpace(data);
       saveProjectSpace(params.projectId, path);
+
+      ipcRenderer.removeAllListeners("select-folder-return");
     });
   };
 

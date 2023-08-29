@@ -70,28 +70,19 @@ ipcMain.on("select-folder", (event, arg) => {
 const getModifiedFiles = (folderPath: string, sinceDate: Date) => {
   try {
     const files = fs.readdirSync(folderPath);
-    const modifiedFiles = [];
 
-    console.log(files.length);
-
-    files.forEach((file, i) => {
-      const filePath = path.join(folderPath, file);
+    return files.map((it) => {
+      const filePath = path.join(folderPath, it);
       const stats = fs.statSync(filePath);
 
-      // make sure that this path is a file & that the modified time is over now
-      if (stats.isFile() && stats.mtime > sinceDate) {
-        const f = fs.readFileSync(filePath);
-
-        modifiedFiles.push({
-          path: filePath,
-          stats: stats,
-          file: f,
-        });
-      }
+      return {
+        file: it,
+        stats,
+        path: filePath,
+      };
     });
-
-    return modifiedFiles;
   } catch (error) {
+    console.log(error);
     return [];
   }
 };
@@ -105,7 +96,9 @@ ipcMain.on(
         "spaces:get-changes-made/return",
         modifiedFiles
       );
+      console.log("hello");
     } catch (error) {
+      console.log(error);
       mainWindow.webContents.send("spaces:get-changes-made/return", []);
     }
   }

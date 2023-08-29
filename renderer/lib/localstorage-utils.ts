@@ -53,4 +53,5 @@ export function saveProjectSpace(projectId: string, path: string) {
     // Save this
     localStorage.setItem(projectSpacesKey, JSON.stringify(spaces));
   }
+  console.log("hello", path);
 }

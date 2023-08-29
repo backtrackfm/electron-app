@@ -79,11 +79,12 @@ export default function CreateVersionPage({
 
     ipcRenderer.on(
       "spaces:get-changes-made/return",
-      (event, modifiedFiles: SystemFile[]) => {
-        setModifiedFiles(modifiedFiles);
-        setLatestModifiedDate(
-          findLatestModifiedFile(modifiedFiles)?.stats.mtime
-        );
+      (event, test: SystemFile[]) => {
+        console.log(test);
+        setModifiedFiles(test);
+        setLatestModifiedDate(findLatestModifiedFile(test)?.stats.mtime);
+
+        ipcRenderer.removeAllListeners("spaces:get-changes-made/return");
       }
     );
   };
