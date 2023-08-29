@@ -47,9 +47,7 @@ export function CreateProjectForm({
 
     const formData = new FormData();
 
-    for (const [key, value] of Object.entries(values)) {
-      formData.append(key, value);
-    }
+    formData.append("body", JSON.stringify(values));
 
     if (file) {
       formData.append("coverArt", file);
@@ -75,6 +73,7 @@ export function CreateProjectForm({
           router.push("/app/dashboard");
           toast.success("Created project");
         },
+        showMessages: true,
       }
     );
 

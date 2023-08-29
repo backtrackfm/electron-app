@@ -30,5 +30,8 @@ export const STRING_ARRAY = z
   });
 
 export const blankable = (type: ZodType) => {
-  return z.union([type, z.literal("")]).optional();
+  return z
+    .union([type, z.literal("")])
+    .optional()
+    .transform((it) => (it === "" || !it ? undefined : it));
 };
