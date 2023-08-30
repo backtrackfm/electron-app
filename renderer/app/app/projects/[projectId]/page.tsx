@@ -1,8 +1,8 @@
 "use client";
 
+import { BranchBox } from "@/components/branch-box";
 import { DashboardVersions } from "@/components/dashboard-versions";
 import { Button } from "@/components/ui/button";
-import { FancySingleBox } from "@/components/ui/fancy-single-box";
 import { getProjectSpace, saveProjectSpace } from "@/lib/localstorage-utils";
 import { StdReply } from "@/lib/stdReply";
 import { Branch, Project } from "@/lib/types";
@@ -86,7 +86,7 @@ export default function ViewProject({
         {reply.data.description}
       </h3>
       <div className="flex gap-2">
-        <FancySingleBox />
+        <BranchBox />
         <Button
           onClick={() => handleSelectFolder()}
           variant={projectSpace.length === 0 ? "destructive" : "outline"}

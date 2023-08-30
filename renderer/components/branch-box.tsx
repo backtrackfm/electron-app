@@ -1,3 +1,8 @@
+"use client";
+
+import { Check, ChevronsUpDown, Edit2 } from "lucide-react";
+import * as React from "react";
+
 import {
   Accordion,
   AccordionContent,
@@ -40,74 +45,50 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { Check, ChevronsUpDown, Edit2 } from "lucide-react";
-import React from "react";
 
 // FIXME: https://twitter.com/lemcii/status/1659649371162419202?s=46&t=gqNnMIjMWXiG2Rbrr5gT6g
 // Removing states would help maybe?
 
-type Framework = Record<"value" | "label", string>;
+type BranchBoxItem = {
+  name: string; // this is just the name, e.g. original. this is also used as id
+  description?: string;
+};
 
-const FRAMEWORKS = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-  {
-    value: "wordpress",
-    label: "WordPress",
-  },
-] satisfies Framework[];
-
-export function FancySingleBox() {
+export function BranchBox() {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [frameworks, setFrameworks] = React.useState<Framework[]>(FRAMEWORKS);
+  const [branchItems, setBranchItems] = React.useState<BranchBoxItem[]>([]);
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [selectedValue, setSelectedValue] = React.useState<Framework | null>(
-    FRAMEWORKS[0]
-  );
+  const [selectedValue, setSelectedValue] =
+    React.useState<BranchBoxItem | null>(null);
 
-  const createFramework = (name: string) => {
-    const newFramework = {
-      value: name.toLowerCase(),
-      label: name,
+  const createBranchItem = (name: string) => {
+    const newBranchItem: BranchBoxItem = {
+      name: name.toLowerCase(),
     };
-    setFrameworks((prev) => [...prev, newFramework]);
-    setSelectedValue(newFramework);
+
+    setBranchItems((prev) => [...prev, newBranchItem]);
+    setSelectedValue(newBranchItem);
   };
 
-  const toggleFramework = (framework: Framework) => {
-    setSelectedValue((currentFrameworks) => framework);
+  const toggleBranchItem = (branchItem: BranchBoxItem) => {
+    setSelectedValue((currentBranchItems) => branchItem);
     inputRef?.current?.focus();
   };
 
-  const updateFramework = (framework: Framework, newFramework: Framework) => {
-    setFrameworks((prev) =>
-      prev.map((f) => (f.value === framework.value ? newFramework : f))
+  const updateBranchItem = (
+    branchItem: BranchBoxItem,
+    newBranchItem: BranchBoxItem
+  ) => {
+    setBranchItems((prev) =>
+      prev.map((f) => (f === branchItem ? newBranchItem : f))
     );
-    setSelectedValue(framework);
+    setSelectedValue(branchItem);
   };
 
-  const deleteFramework = (framework: Framework) => {
-    setFrameworks((prev) => prev.filter((f) => f.value !== framework.value));
+  const deleteBranchItem = (branchItem: BranchBoxItem) => {
+    setBranchItems((prev) => prev.filter((f) => f !== branchItem));
     setSelectedValue(null);
   };
 
@@ -126,8 +107,8 @@ export function FancySingleBox() {
             aria-expanded={openCombobox}
             className="w-[200px] justify-between text-foreground"
           >
-            {selectedValue === null && "Select labels"}
-            {selectedValue && selectedValue.label}
+            {selectedValue === null && "Select branch"}
+            {selectedValue && selectedValue.name}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -135,18 +116,18 @@ export function FancySingleBox() {
           <Command loop>
             <CommandInput
               ref={inputRef}
-              placeholder="Search framework..."
+              placeholder="Search branch..."
               value={inputValue}
               onValueChange={setInputValue}
             />
             <CommandGroup className="max-h-[145px] overflow-auto">
-              {frameworks.map((framework) => {
-                const isActive = selectedValue === framework;
+              {branchItems.map((branchItem) => {
+                const isActive = selectedValue === branchItem;
                 return (
                   <CommandItem
-                    key={framework.value}
-                    value={framework.value}
-                    onSelect={() => toggleFramework(framework)}
+                    key={branchItem.name}
+                    value={branchItem.name}
+                    onSelect={() => toggleBranchItem(branchItem)}
                   >
                     <Check
                       className={cn(
@@ -154,13 +135,13 @@ export function FancySingleBox() {
                         isActive ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    <div className="flex-1">{framework.label}</div>
+                    <div className="flex-1">{branchItem.name}</div>
                   </CommandItem>
                 );
               })}
               <CommandItemCreate
-                onSelect={() => createFramework(inputValue)}
-                {...{ inputValue, frameworks }}
+                onSelect={() => createBranchItem(inputValue)}
+                {...{ inputValue, branchItems }}
               />
             </CommandGroup>
             <CommandSeparator alwaysRender />
@@ -172,7 +153,7 @@ export function FancySingleBox() {
               >
                 <div className={cn("mr-2 h-4 w-4")} />
                 <Edit2 className="mr-2 h-2.5 w-2.5" />
-                Edit Labels
+                Edit Branches
               </CommandItem>
             </CommandGroup>
           </Command>
@@ -189,29 +170,27 @@ export function FancySingleBox() {
       >
         <DialogContent className="max-h-[90vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle>Edit Labels</DialogTitle>
+            <DialogTitle>Edit Branches</DialogTitle>
             <DialogDescription>
-              Change the label names or delete the labels. Create a label
-              through the combobox though.
+              Delete or modify branches on this project
             </DialogDescription>
           </DialogHeader>
           <div className="overflow-scroll -mx-6 px-6 flex-1 py-2">
-            {frameworks.map((framework) => {
+            {branchItems.map((branchItem) => {
               return (
                 <DialogListItem
-                  key={framework.value}
-                  onDelete={() => deleteFramework(framework)}
+                  key={branchItem.name}
+                  onDelete={() => deleteBranchItem(branchItem)}
                   onSubmit={(e) => {
                     e.preventDefault();
                     const target = e.target as typeof e.target &
-                      Record<"name", { value: string }>;
-                    const newFramework = {
-                      value: target.name.value.toLowerCase(),
-                      label: target.name.value,
-                    };
-                    updateFramework(framework, newFramework);
+                      Record<"name" | "description", { value: string }>;
+                    updateBranchItem(branchItem, {
+                      name: target.name.value.toLowerCase(),
+                      description: target.description.value,
+                    });
                   }}
-                  {...framework}
+                  item={branchItem}
                 />
               );
             })}
@@ -229,18 +208,17 @@ export function FancySingleBox() {
 
 const CommandItemCreate = ({
   inputValue,
-  frameworks,
+  branchItems,
   onSelect,
 }: {
   inputValue: string;
-  frameworks: Framework[];
+  branchItems: BranchBoxItem[];
   onSelect: () => void;
 }) => {
-  const hasNoFramework = !frameworks
-    .map(({ value }) => value)
-    .includes(`${inputValue.toLowerCase()}`);
+  const hasNoBranchItem =
+    branchItems.findIndex((it) => it.name === inputValue.toLowerCase()) === -1;
 
-  const render = inputValue !== "" && hasNoFramework;
+  const render = inputValue !== "" && hasNoBranchItem;
 
   if (!render) return null;
 
@@ -253,24 +231,29 @@ const CommandItemCreate = ({
       onSelect={onSelect}
     >
       <div className={cn("mr-2 h-4 w-4")} />
-      Create new label &quot;{inputValue}&quot;
+      Create new branch &quot;{inputValue}&quot;
     </CommandItem>
   );
 };
 
 const DialogListItem = ({
-  value,
-  label,
+  item,
   onSubmit,
   onDelete,
-}: Framework & {
+}: {
+  item: BranchBoxItem;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   onDelete: () => void;
 }) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+
   const [accordionValue, setAccordionValue] = React.useState<string>("");
-  const [inputValue, setInputValue] = React.useState<string>(label);
-  const disabled = label === inputValue;
+  const [inputValue, setInputValue] = React.useState<string>(item.name);
+  const [descriptionInputValue, setDescriptionInputValue] =
+    React.useState<string>(item.description ?? "");
+
+  const disabled =
+    item.name === inputValue && item.description === descriptionInputValue;
 
   React.useEffect(() => {
     if (accordionValue !== "") {
@@ -280,15 +263,15 @@ const DialogListItem = ({
 
   return (
     <Accordion
-      key={value}
+      key={item.name}
       type="single"
       collapsible
       value={accordionValue}
       onValueChange={setAccordionValue}
     >
-      <AccordionItem value={value}>
+      <AccordionItem value={item.name}>
         <div className="flex justify-between items-center">
-          <div>{label}</div>
+          <div>{item.name}</div>
           <div className="flex items-center gap-4">
             <AccordionTrigger>Edit</AccordionTrigger>
             <AlertDialog>
@@ -302,7 +285,7 @@ const DialogListItem = ({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    You are about to delete the label {label}.
+                    You are about to delete the branch {item.name}.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -324,13 +307,21 @@ const DialogListItem = ({
             }}
           >
             <div className="w-full gap-3 grid">
-              <Label htmlFor="name">Label name</Label>
+              <Label htmlFor="name">Branch</Label>
               <Input
                 ref={inputRef}
                 id="name"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 className="h-8"
+              />
+
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                className="h-8"
+                value={descriptionInputValue}
+                onChange={(e) => setDescriptionInputValue(e.target.value)}
               />
             </div>
             {/* REMINDER: size="xs" */}
