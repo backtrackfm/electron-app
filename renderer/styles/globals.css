@@ -1,5 +1,9 @@
 @import url("https://use.typekit.net/fiy5ksm.css");
 
+:root {
+  color-scheme: dark;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
