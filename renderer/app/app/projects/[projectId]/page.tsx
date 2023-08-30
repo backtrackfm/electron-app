@@ -2,13 +2,7 @@
 
 import { DashboardVersions } from "@/components/dashboard-versions";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { FancySingleBox } from "@/components/ui/fancy-single-box";
 import { getProjectSpace, saveProjectSpace } from "@/lib/localstorage-utils";
 import { StdReply } from "@/lib/stdReply";
 import { Branch, Project } from "@/lib/types";
@@ -92,18 +86,7 @@ export default function ViewProject({
         {reply.data.description}
       </h3>
       <div className="flex gap-2">
-        <Select onValueChange={(val) => setBranch(val)} value={branch}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Branch" />
-          </SelectTrigger>
-          <SelectContent>
-            {reply.data.branches.map((it, i) => (
-              <SelectItem value={it.name} key={i}>
-                {it.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <FancySingleBox />
         <Button
           onClick={() => handleSelectFolder()}
           variant={projectSpace.length === 0 ? "destructive" : "outline"}
@@ -116,6 +99,7 @@ export default function ViewProject({
         </Button>
       </div>
       <DashboardVersions branchName={branch} projectId={params.projectId} />
+
       <Link href={`/app/projects/${params.projectId}/${branch}/create`}>
         <Button>Create new version</Button>
       </Link>
