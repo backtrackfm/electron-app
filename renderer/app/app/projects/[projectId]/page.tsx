@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { getProjectSpace, saveProjectSpace } from "@/lib/localstorage-utils";
 import { StdReply } from "@/lib/stdReply";
 import { Branch, Project } from "@/lib/types";
-import { api, fetcher } from "@/lib/utils";
+import { api, fetcher, prepare } from "@/lib/utils";
+import axios from "axios";
 import { ipcRenderer } from "electron";
 import { FolderHeart, Loader } from "lucide-react";
 import Link from "next/link";
@@ -39,7 +40,7 @@ export default function ViewProject({
 
   // TODO: Fix typings
   const {
-    data: reply,
+    data: projectWithBranches,
     error,
     isLoading,
   } = useSWR<StdReply<Project & { branches: Branch[] }>>(
@@ -55,7 +56,7 @@ export default function ViewProject({
     return error;
   }
 
-  if (!reply) {
+  if (!projectWithBranches) {
     router.push("/home");
     return null;
   }
@@ -80,13 +81,46 @@ export default function ViewProject({
   return (
     <div className="flex flex-col gap-4">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        {reply.data.name}
+        {projectWithBranches.data.name}
       </h1>
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-        {reply.data.description}
+        {projectWithBranches.data.description}
       </h3>
       <div className="flex gap-2">
-        <BranchBox />
+        <BranchBox
+          branches={projectWithBranches.data?.branches ?? []}
+          onCreate={(it) => {
+            prepare(
+              () =>
+                axios.post(api(`/projects/${params.projectId}/branches`), it, {
+                  withCredentials: true,
+                }),
+              {
+                successFn: () => {
+                  toast.success("Created branch");
+                },
+                showMessages: true,
+              }
+            );
+          }}
+          onDelete={(it) => {
+            prepare(
+              () =>
+                axios.delete(
+                  api(`/projects/${params.projectId}/branches/${it.name}`),
+                  {
+                    withCredentials: true,
+                  }
+                ),
+              {
+                successFn: () => {
+                  toast.success("Deleted branch");
+                },
+                showMessages: true,
+              }
+            );
+          }}
+        />
         <Button
           onClick={() => handleSelectFolder()}
           variant={projectSpace.length === 0 ? "destructive" : "outline"}

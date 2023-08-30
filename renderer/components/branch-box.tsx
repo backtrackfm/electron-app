@@ -43,6 +43,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Branch } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { DialogClose } from "@radix-ui/react-dialog";
 
@@ -54,9 +55,22 @@ type BranchBoxItem = {
   description?: string;
 };
 
-export function BranchBox() {
+type BranchBoxProps = {
+  branches: Branch[];
+  onCreate(branchItem: BranchBoxItem): void;
+  onDelete(branchItem: BranchBoxItem): void;
+};
+
+export function BranchBox(props: BranchBoxProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [branchItems, setBranchItems] = React.useState<BranchBoxItem[]>([]);
+  const [branchItems, setBranchItems] = React.useState<BranchBoxItem[]>(
+    props.branches.map((it) => {
+      return {
+        name: it.name,
+        description: it.description,
+      };
+    })
+  );
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
@@ -70,6 +84,7 @@ export function BranchBox() {
 
     setBranchItems((prev) => [...prev, newBranchItem]);
     setSelectedValue(newBranchItem);
+    props.onCreate(newBranchItem);
   };
 
   const toggleBranchItem = (branchItem: BranchBoxItem) => {
@@ -90,6 +105,7 @@ export function BranchBox() {
   const deleteBranchItem = (branchItem: BranchBoxItem) => {
     setBranchItems((prev) => prev.filter((f) => f !== branchItem));
     setSelectedValue(null);
+    props.onDelete(branchItem);
   };
 
   const onComboboxOpenChange = (value: boolean) => {
