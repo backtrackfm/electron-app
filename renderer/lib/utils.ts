@@ -30,10 +30,9 @@ export async function prepare(
     return res;
   } catch (error) {
     // check if the error was thrown from axios
-    console.log(error);
 
     // If showMessages is not provided, then we assume we should
-    if (opts && opts.showMessages) {
+    if (opts?.showMessages ?? true) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
           const stdReply = error.response.data;
