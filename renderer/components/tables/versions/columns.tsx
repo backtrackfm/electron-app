@@ -19,6 +19,7 @@ import { ipcRenderer } from "electron";
 import { DownloadCloud, MoreHorizontal, Play } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { ProjectFilesDownloadInfo } from "../../../../main/background";
 
 type VersionWithPreviewWithExtras = VersionWithPreview & {
   number: number;
@@ -92,14 +93,15 @@ export function getColumns(
         const name: string = row.getValue("name");
 
         function downloadFiles() {
-          console.log(getProjectSpace(projectId));
-
           ipcRenderer.send("projectFiles:download", {
             url: filesURL,
             properties: {
               directory: getProjectSpace(projectId).spacePath ?? undefined,
+              filename: `${name
+                .toLowerCase()
+                .replace(/ /g, "-")}-project-files.zip`,
             },
-          });
+          } satisfies ProjectFilesDownloadInfo);
 
           ipcRenderer.on("projectFiles:download/success", (event, file) => {
             toast.success("Downloaded file");

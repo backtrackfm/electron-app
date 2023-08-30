@@ -1,5 +1,5 @@
 import { app, dialog, ipcMain } from "electron";
-import { download } from "electron-dl";
+import { Options, download } from "electron-dl";
 import serve from "electron-serve";
 import fs from "fs";
 import os from "os";
@@ -104,11 +104,9 @@ ipcMain.on(
   }
 );
 
-type ProjectFilesDownloadInfo = {
+export type ProjectFilesDownloadInfo = {
   url: string;
-  properties: {
-    directory?: string;
-  };
+  properties: Options;
 };
 
 ipcMain.on("projectFiles:download", (event, info: ProjectFilesDownloadInfo) => {

@@ -29,6 +29,7 @@ interface CreateVersionFormProps extends React.HTMLAttributes<HTMLDivElement> {
   branchId: string;
   disabled: boolean;
   modifiedFiles: SystemFile[];
+  projectSpace: string;
 }
 
 export function CreateVersionForm({
@@ -66,7 +67,11 @@ export function CreateVersionForm({
       const file = props.modifiedFiles[i];
       const fileData = await new Response(file.file).arrayBuffer();
 
-      zip.file(file.file.name, fileData);
+      // generate name
+      const pathFragment = file.path.slice(props.projectSpace.length);
+
+      zip.file(pathFragment, fileData);
+      console.log(zip);
     }
 
     const zipBlob = await zip.generateAsync({

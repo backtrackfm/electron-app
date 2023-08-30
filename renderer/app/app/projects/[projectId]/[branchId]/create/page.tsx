@@ -117,6 +117,7 @@ export default function CreateVersionPage({
         projectId={params.projectId}
         disabled={modifiedFiles.length === 0}
         modifiedFiles={modifiedFiles}
+        projectSpace={projectSpace}
       />
     </div>
   );
