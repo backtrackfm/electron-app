@@ -22,7 +22,7 @@ export default function ViewProject({
   params: { projectId: string };
 }) {
   const router = useRouter();
-  const [branch, setBranch] = useState<string>("original");
+  const [branch, setBranch] = useState<string | null>(null);
   const [projectSpace, setProjectSpace] = useState<string>(
     getProjectSpace(params.projectId).spacePath
   );
@@ -89,6 +89,8 @@ export default function ViewProject({
       <div className="flex gap-2">
         <BranchBox
           branches={projectWithBranches.data?.branches ?? []}
+          branch={branch}
+          setBranch={(val) => setBranch(val)}
           onCreate={(it) => {
             prepare(
               () =>
@@ -115,6 +117,28 @@ export default function ViewProject({
               {
                 successFn: () => {
                   toast.success("Deleted branch");
+                },
+                showMessages: true,
+              }
+            );
+          }}
+          onEdit={(branch, newBranch) => {
+            prepare(
+              () =>
+                axios.patch(
+                  api(`/projects/${params.projectId}/branches/${branch.name}`),
+                  {
+                    name: newBranch.name,
+                    description:
+                      newBranch.name.trim() === "" ? undefined : newBranch.name,
+                  },
+                  {
+                    withCredentials: true,
+                  }
+                ),
+              {
+                successFn: () => {
+                  toast.success("Updated branch");
                 },
                 showMessages: true,
               }

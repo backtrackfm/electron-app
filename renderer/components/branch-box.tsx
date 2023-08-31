@@ -57,8 +57,11 @@ type BranchBoxItem = {
 
 type BranchBoxProps = {
   branches: Branch[];
+  branch: string | null;
+  setBranch(branch: string): void;
   onCreate(branchItem: BranchBoxItem): void;
   onDelete(branchItem: BranchBoxItem): void;
+  onEdit(oldBranchItem: BranchBoxItem, branchItem: BranchBoxItem): void;
 };
 
 export function BranchBox(props: BranchBoxProps) {
@@ -74,8 +77,8 @@ export function BranchBox(props: BranchBoxProps) {
   const [openCombobox, setOpenCombobox] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>("");
-  const [selectedValue, setSelectedValue] =
-    React.useState<BranchBoxItem | null>(null);
+  // const [selectedValue, setSelectedValue] =
+  //   React.useState<BranchBoxItem | null>(null);
 
   const createBranchItem = (name: string) => {
     const newBranchItem: BranchBoxItem = {
@@ -83,12 +86,12 @@ export function BranchBox(props: BranchBoxProps) {
     };
 
     setBranchItems((prev) => [...prev, newBranchItem]);
-    setSelectedValue(newBranchItem);
+    props.setBranch(newBranchItem.name);
     props.onCreate(newBranchItem);
   };
 
   const toggleBranchItem = (branchItem: BranchBoxItem) => {
-    setSelectedValue((currentBranchItems) => branchItem);
+    props.setBranch(branchItem.name);
     inputRef?.current?.focus();
   };
 
@@ -99,12 +102,17 @@ export function BranchBox(props: BranchBoxProps) {
     setBranchItems((prev) =>
       prev.map((f) => (f === branchItem ? newBranchItem : f))
     );
-    setSelectedValue(branchItem);
+
+    // When we update the branch, the name might change
+    props.setBranch(newBranchItem.name);
+
+    props.onEdit(branchItem, newBranchItem);
   };
 
   const deleteBranchItem = (branchItem: BranchBoxItem) => {
     setBranchItems((prev) => prev.filter((f) => f !== branchItem));
-    setSelectedValue(null);
+
+    props.setBranch(null);
     props.onDelete(branchItem);
   };
 
@@ -123,8 +131,8 @@ export function BranchBox(props: BranchBoxProps) {
             aria-expanded={openCombobox}
             className="w-[200px] justify-between text-foreground"
           >
-            {selectedValue === null && "Select branch"}
-            {selectedValue && selectedValue.name}
+            {props.branch === null && "Select branch"}
+            {props.branch && props.branch}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -138,7 +146,7 @@ export function BranchBox(props: BranchBoxProps) {
             />
             <CommandGroup className="max-h-[145px] overflow-auto">
               {branchItems.map((branchItem) => {
-                const isActive = selectedValue === branchItem;
+                const isActive = props.branch === branchItem.name;
                 return (
                   <CommandItem
                     key={branchItem.name}
@@ -199,6 +207,7 @@ export function BranchBox(props: BranchBoxProps) {
                   onDelete={() => deleteBranchItem(branchItem)}
                   onSubmit={(e) => {
                     e.preventDefault();
+                    console.log(e);
                     const target = e.target as typeof e.target &
                       Record<"name" | "description", { value: string }>;
                     updateBranchItem(branchItem, {
@@ -266,7 +275,7 @@ const DialogListItem = ({
   const [accordionValue, setAccordionValue] = React.useState<string>("");
   const [inputValue, setInputValue] = React.useState<string>(item.name);
   const [descriptionInputValue, setDescriptionInputValue] =
-    React.useState<string>(item.description ?? "");
+    React.useState<string>(item.description);
 
   const disabled =
     item.name === inputValue && item.description === descriptionInputValue;

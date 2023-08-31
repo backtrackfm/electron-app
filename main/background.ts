@@ -90,13 +90,14 @@ const getModifiedFiles = (folderPath: string, sinceDate: Date) => {
 ipcMain.on(
   "spaces:get-changes-made",
   (event, path: string, lastUpdate: Date) => {
+    if (!path) return;
+
     try {
       const modifiedFiles = getModifiedFiles(path, lastUpdate);
       mainWindow.webContents.send(
         "spaces:get-changes-made/return",
         modifiedFiles
       );
-      console.log("hello");
     } catch (error) {
       console.log(error);
       mainWindow.webContents.send("spaces:get-changes-made/return", []);

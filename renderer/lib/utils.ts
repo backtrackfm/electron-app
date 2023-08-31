@@ -57,7 +57,9 @@ export const fetcher = async (url: string, showMessages: boolean = true) =>
           withCredentials: true,
         })
         .then((res) => res.data),
-    {}
+    {
+      showMessages: showMessages,
+    }
   );
 
 export function formatDate(date: Date): string {
