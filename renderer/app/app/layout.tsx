@@ -93,9 +93,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
 
-              <div>
+              <div className="flex flex-col gap-4">
                 <div className="bg-zinc-900 rounded-md p-4 flex flex-col gap-3 space-evenly">
-                  <h1 className="font-bold">Onboarding</h1>
+                  <div className="flex justify-between">
+                    <h1 className="font-bold">Onboarding</h1>
+                    <p className="text-muted-foreground">
+                      {countTrue(onboarding)}/{Object.keys(onboarding).length}{" "}
+                      completed
+                    </p>
+                  </div>
                   <hr />
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
