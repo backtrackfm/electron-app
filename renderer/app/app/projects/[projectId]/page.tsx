@@ -130,7 +130,9 @@ export default function ViewProject({
                   {
                     name: newBranch.name,
                     description:
-                      newBranch.name.trim() === "" ? undefined : newBranch.name,
+                      newBranch.description.trim() === ""
+                        ? undefined
+                        : newBranch.description, // TODO: fix
                   },
                   {
                     withCredentials: true,

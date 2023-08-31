@@ -80,6 +80,8 @@ export function BranchBox(props: BranchBoxProps) {
   // const [selectedValue, setSelectedValue] =
   //   React.useState<BranchBoxItem | null>(null);
 
+  console.log(branchItems);
+
   const createBranchItem = (name: string) => {
     const newBranchItem: BranchBoxItem = {
       name: name.toLowerCase(),
@@ -205,14 +207,12 @@ export function BranchBox(props: BranchBoxProps) {
                 <DialogListItem
                   key={branchItem.name}
                   onDelete={() => deleteBranchItem(branchItem)}
-                  onSubmit={(e) => {
+                  onSubmit={(e, name, description) => {
                     e.preventDefault();
-                    console.log(e);
-                    const target = e.target as typeof e.target &
-                      Record<"name" | "description", { value: string }>;
+                    console.log(name, description);
                     updateBranchItem(branchItem, {
-                      name: target.name.value.toLowerCase(),
-                      description: target.description.value,
+                      name: name.toLowerCase(),
+                      description,
                     });
                   }}
                   item={branchItem}
@@ -267,7 +267,11 @@ const DialogListItem = ({
   onDelete,
 }: {
   item: BranchBoxItem;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (
+    e: React.FormEvent<HTMLFormElement>,
+    name: string,
+    description: string
+  ) => void;
   onDelete: () => void;
 }) => {
   const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -327,7 +331,7 @@ const DialogListItem = ({
           <form
             className="flex items-end gap-4"
             onSubmit={(e) => {
-              onSubmit(e);
+              onSubmit(e, inputValue, descriptionInputValue);
               setAccordionValue("");
             }}
           >
