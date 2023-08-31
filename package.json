@@ -33,6 +33,7 @@
     "electron-store": "^8.1.0",
     "jszip": "^3.10.1",
     "lucide-react": "0.263.1",
+    "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.45.4",
     "react-hot-toast": "^2.4.1",
     "swr": "^2.2.1",

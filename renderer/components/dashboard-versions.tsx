@@ -37,7 +37,7 @@ export function DashboardVersions(props: DashboardVersionsProps) {
   return (
     <div>
       <DataTable
-        columns={getColumns(props.projectId)}
+        columns={getColumns(props.projectId, props.branchName)}
         data={reply.data
           .sort(
             (a, b) =>

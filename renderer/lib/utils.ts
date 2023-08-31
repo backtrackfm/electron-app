@@ -41,6 +41,7 @@ export async function prepare(
           toast.error(error.code ?? "An error occurred!!");
         }
       } else {
+        console.log(error);
         toast.error("An error occurred!!!");
       }
     }

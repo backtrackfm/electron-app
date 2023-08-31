@@ -16,7 +16,7 @@ import { Preview } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { ipcRenderer } from "electron";
-import { DownloadCloud, MoreHorizontal, Play } from "lucide-react";
+import { DownloadCloud, Eye, MoreHorizontal, Play } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { ProjectFilesDownloadInfo } from "../../../../main/background";
@@ -26,7 +26,8 @@ type VersionWithPreviewWithExtras = VersionWithPreview & {
 };
 
 export function getColumns(
-  projectId: string
+  projectId: string,
+  branchName: string
 ): ColumnDef<VersionWithPreviewWithExtras>[] {
   return [
     {
@@ -62,7 +63,7 @@ export function getColumns(
         const previews: (Preview | undefined)[] = row.getValue("previews");
 
         return (
-          <div className="inline-flex">
+          <div className="inline-flex gap-2">
             {previews.map((it) => (
               <Link href={it.fileURL ?? ""} key={it.id}>
                 <div className="bg-zinc-900 rounded-sm px-3 flex gap-1 items-center">
@@ -124,6 +125,13 @@ export function getColumns(
                 <DownloadCloud className="w-4 h-4 mr-2" /> Download project
                 files
               </DropdownMenuItem>
+              <Link
+                href={`/app/projects/${projectId}/${branchName}/${name}/createPreview`}
+              >
+                <DropdownMenuItem>
+                  <Eye className="w-4 h-4 mr-2" /> Add preview
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
         );
