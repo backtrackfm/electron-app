@@ -1,5 +1,6 @@
 "use client";
 
+import { PlaybarContextValue } from "@/app/app/projects/[projectId]/layout";
 import { VersionWithPreview } from "@/components/dashboard-versions";
 import Tag from "@/components/tag";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,8 @@ type VersionWithPreviewWithExtras = VersionWithPreview & {
 
 export function getColumns(
   projectId: string,
-  branchName: string
+  branchName: string,
+  playbarContext: PlaybarContextValue
 ): ColumnDef<VersionWithPreviewWithExtras>[] {
   return [
     {
@@ -65,12 +67,14 @@ export function getColumns(
         return (
           <div className="inline-flex gap-2">
             {previews.map((it) => (
-              <Link href={it.fileURL ?? ""} key={it.id}>
-                <div className="bg-zinc-900 rounded-sm px-3 flex gap-1 items-center">
-                  <Play className="w-3" />
-                  {it.title}
-                </div>
-              </Link>
+              <Button
+                className="rounded-sm px-3 flex gap-1 items-center"
+                variant="ghost"
+                onClick={() => playbarContext.setPlaybarURL(it.fileURL ?? null)}
+              >
+                <Play className="w-3" />
+                {it.title}
+              </Button>
             ))}
           </div>
         );

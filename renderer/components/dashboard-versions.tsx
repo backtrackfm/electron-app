@@ -5,6 +5,8 @@ import { Loader } from "lucide-react";
 import useSWR from "swr";
 import { getColumns } from "./tables/versions/columns";
 import { DataTable } from "./tables/versions/data-table";
+import { useContext } from 'react';
+import { PlaybarContext } from '@/app/app/projects/[projectId]/layout';
 
 interface DashboardVersionsProps extends React.HTMLAttributes<HTMLDivElement> {
   branchName: string;
@@ -16,6 +18,8 @@ export type VersionWithPreview = Version & {
 };
 
 export function DashboardVersions(props: DashboardVersionsProps) {
+  const playbarContext = useContext(PlaybarContext);
+
   // TODO: Fix typings
   const {
     data: reply,
@@ -37,7 +41,7 @@ export function DashboardVersions(props: DashboardVersionsProps) {
   return (
     <div>
       <DataTable
-        columns={getColumns(props.projectId, props.branchName)}
+        columns={getColumns(props.projectId, props.branchName, playbarContext)}
         data={reply.data
           .sort(
             (a, b) =>
