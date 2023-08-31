@@ -3,14 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/use-user";
 import { User } from "@/lib/types";
-import { api } from "@/lib/utils";
+import { api, prepare } from "@/lib/utils";
 import logo from "@/public/images/logo.svg";
 import axios from "axios";
 import { Check, LayoutDashboard, LoaderIcon, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export const UserContext = createContext<User | null>(null);
@@ -34,11 +34,22 @@ const countTrue = (onboarding: Onboarding) => {
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { reply, error, isLoading } = useUser();
+
   const [onboarding, setOnboarding] = useState<Onboarding>({
     project: false,
     branch: false,
     version: false,
   });
+
+  useEffect(() => {
+    prepare(() =>
+      axios.get(api("/users/onboarding"), {
+        withCredentials: true,
+      })
+    ).then((it) => {
+      setOnboarding(it.data.data);
+    });
+  }, []);
 
   if (!reply) {
     if (!isLoading) {

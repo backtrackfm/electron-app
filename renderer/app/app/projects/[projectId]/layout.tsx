@@ -20,7 +20,9 @@ export default function RootLayout({
     <PlaybarContext.Provider value={{ playbarURL, setPlaybarURL }}>
       <div className="min-h-screen">
         {children}
-        <Playbar audioURL={playbarURL} />
+        <div className="relative">
+          <Playbar audioURL={playbarURL} />
+        </div>
       </div>
     </PlaybarContext.Provider>
   );
