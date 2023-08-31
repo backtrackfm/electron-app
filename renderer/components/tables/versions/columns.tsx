@@ -72,7 +72,11 @@ export function getColumns(
                 variant="ghost"
                 onClick={() => playbarContext.setPlaybarURL(it.fileURL ?? null)}
               >
-                <Play className="w-3" />
+                {playbarContext.playbarURL === it.fileURL ? (
+                  <div className="w-2 h-2 rounded-full bg-primary" />
+                ) : (
+                  <Play className="w-4" />
+                )}
                 {it.title}
               </Button>
             ))}

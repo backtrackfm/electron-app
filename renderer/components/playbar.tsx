@@ -43,8 +43,10 @@ export default function Playbar({ audioURL }: PlaybarProps) {
   useEffect(() => {
     if (!audioRef.current) return;
     audioRef.current.src = audioURL;
-    audioRef.current.pause();
+    audioRef.current.play();
     audioRef.current.currentTime = 0;
+    setElapsedTime(0);
+    setPlaying(true);
   }, [audioURL]);
 
   const handlePlayPause = () => {
@@ -87,7 +89,7 @@ export default function Playbar({ audioURL }: PlaybarProps) {
         </Button>
         <Slider
           disabled={!audioURL}
-          value={[audioRef.current?.currentTime ?? 0]}
+          value={[elapsedTime]}
           min={0}
           max={audioRef.current?.duration ?? 100}
           onValueChange={(val) => {
