@@ -1,20 +1,64 @@
 import {
-  screen,
   BrowserWindow,
   BrowserWindowConstructorOptions,
-} from 'electron';
-import Store from 'electron-store';
+  screen,
+} from "electron";
+import {
+  default as ElectronStore,
+  Schema,
+  default as Store,
+} from "electron-store";
 
-export default (windowName: string, options: BrowserWindowConstructorOptions): BrowserWindow => {
-  const key = 'window-state';
+type BacktrackStoreSchema = {
+  winSize: number[];
+  persistedCookies: Electron.Cookie[];
+};
+
+export default async (
+  windowName: string,
+  options: BrowserWindowConstructorOptions
+): Promise<BrowserWindow> => {
+  const schema: Schema<BacktrackStoreSchema> = {
+    winSize: {
+      type: "array",
+      items: {
+        type: "number",
+      },
+    },
+    persistedCookies: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          domain: { type: "string" },
+          expirationDate: { type: "number" },
+          hostOnly: { type: "boolean" },
+          httpOnly: { type: "boolean" },
+          name: { type: "string" },
+          path: { type: "string" },
+          sameSite: {
+            type: "string",
+            enum: ["unspecified", "no_restriction", "lax", "strict"],
+          },
+          secure: { type: "boolean" },
+          session: { type: "boolean" },
+          value: { type: "string" },
+        },
+        required: ["name", "sameSite", "value"],
+        additionalProperties: false,
+      },
+    },
+  };
+
+  const key = "window-state";
   const name = `window-state-${windowName}`;
-  const store = new Store({ name });
+  const store = new Store({ name, schema });
   const defaultSize = {
     width: options.width,
     height: options.height,
   };
   let state = {};
-  let win;
+  let win: Electron.BrowserWindow;
 
   const restore = () => store.get(key, defaultSize);
 
@@ -46,8 +90,8 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
     });
   };
 
-  const ensureVisibleOnSomeDisplay = windowState => {
-    const visible = screen.getAllDisplays().some(display => {
+  const ensureVisibleOnSomeDisplay = (windowState) => {
+    const visible = screen.getAllDisplays().some((display) => {
       return windowWithinBounds(windowState, display.bounds);
     });
     if (!visible) {
@@ -58,14 +102,22 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
     return windowState;
   };
 
-  const saveState = () => {
+  const saveState = async () => {
     if (!win.isMinimized() && !win.isMaximized()) {
       Object.assign(state, getCurrentPosition());
     }
     store.set(key, state);
+
+    const cookies = await win.webContents.session.cookies.get({
+      name: "auth-session-cookie",
+    });
+
+    store.set("persistedCookies", cookies);
   };
 
   state = ensureVisibleOnSomeDisplay(restore());
+
+  const resolution = getSizeSettings(store);
 
   const browserOptions: BrowserWindowConstructorOptions = {
     ...state,
@@ -75,10 +127,43 @@ export default (windowName: string, options: BrowserWindowConstructorOptions): B
       contextIsolation: false,
       ...options.webPreferences,
     },
+    width: resolution[0],
+    height: resolution[1],
   };
   win = new BrowserWindow(browserOptions);
 
-  win.on('close', saveState);
+  const storedCookies = store.get("persistedCookies");
+
+  const promises = storedCookies.map((it) =>
+    win.webContents.session.cookies.set({ ...it, url: "http://localhost:8888" })
+  );
+
+  await Promise.all(promises);
+
+  win.on("resized", () => saveBounds(store, win.getSize()));
+
+  win.on("close", saveState);
 
   return win;
 };
+
+function getSizeSettings(store: ElectronStore<BacktrackStoreSchema>): number[] {
+  const defaultSize: number[] = [800, 600];
+
+  const size = store.get("winSize");
+
+  // If the user's already set a size
+  if (size) {
+    return size;
+  }
+
+  store.set("winSize", defaultSize);
+  return defaultSize;
+}
+
+function saveBounds(
+  store: ElectronStore<BacktrackStoreSchema>,
+  newSize: number[]
+) {
+  store.set("winSize", newSize);
+}

@@ -1,6 +1,8 @@
 node_modules
 *.log
 .next
-app
+/app
 dist
 .vscode
+.DS_Store
+/renderer/out
