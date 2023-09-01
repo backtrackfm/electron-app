@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getProjectSpace } from "@/lib/localstorage-utils";
 import { Preview } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
+import { api, formatDate, prepare } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import axios from "axios";
 import { ipcRenderer } from "electron";
-import { DownloadCloud, Eye, MoreHorizontal, Play } from "lucide-react";
+import { DownloadCloud, Eye, MoreHorizontal, Play, Trash } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { ProjectFilesDownloadInfo } from "../../../../main/background";
@@ -29,7 +30,8 @@ type VersionWithPreviewWithExtras = VersionWithPreview & {
 export function getColumns(
   projectId: string,
   branchName: string,
-  playbarContext: PlaybarContextValue
+  playbarContext: PlaybarContextValue,
+  onDelete: (name: string) => void
 ): ColumnDef<VersionWithPreviewWithExtras>[] {
   return [
     {
@@ -50,7 +52,7 @@ export function getColumns(
         const tags: string[] = row.getValue("tags");
 
         return (
-          <div className="inline-flex">
+          <div className="inline-flex gap-2">
             {tags.map((it, i) => (
               <Tag key={i} name={it} />
             ))}
@@ -140,6 +142,24 @@ export function getColumns(
                   <Eye className="w-4 h-4 mr-2" /> Add preview
                 </DropdownMenuItem>
               </Link>
+
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() =>
+                  prepare(() =>
+                    axios.delete(
+                      api(
+                        `/projects/${projectId}/branches/${branchName}/versions/${name}`
+                      ),
+                      {
+                        withCredentials: true,
+                      }
+                    )
+                  ).then(() => onDelete(name))
+                }
+              >
+                <Trash className="w-4 h-4 mr-2" /> Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );

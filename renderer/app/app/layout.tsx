@@ -47,6 +47,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         withCredentials: true,
       })
     ).then((it) => {
+      if (!it) return;
       setOnboarding(it.data.data);
     });
   }, []);
@@ -121,11 +122,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                     <div
                       className={`h-2 bg-fuchsia-400 rounded-full`}
                       style={{
-                        width: Math.round(
+                        width: `${Math.round(
                           (countTrue(onboarding) /
                             Object.keys(onboarding).length) *
                             100
-                        ),
+                        )}%`,
                       }}
                     />
                   </div>

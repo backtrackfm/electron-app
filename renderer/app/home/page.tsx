@@ -1,9 +1,42 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/use-user";
+import { User } from "@/lib/types";
+import logo from "@/public/images/logo.svg";
+import { AxiosResponse } from "axios";
+import { Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import logo from "@/public/images/logo.svg";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-function Home() {
+export default function Home() {
+  const {
+    error,
+    isLoading,
+    reply,
+  }: {
+    error: any;
+    isLoading: boolean;
+    reply: AxiosResponse<User, any>;
+  } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (reply?.data) {
+      router.push("/app/dashboard");
+    }
+  }, [reply]);
+
+  if (error) {
+    return error;
+  }
+
+  if (isLoading) {
+    return <Loader className="animate-spin" />;
+  }
+
   return (
     <>
       <div className="h-full w-full mt-8 flex justify-center">
@@ -20,14 +53,17 @@ function Home() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Version your music
           </h1>
-          <Button>
-            <Link href="/auth/signin">Sign In</Link>
-          </Button>
-          <Link href="/app/dashboard">Dashboard</Link>
+          {reply?.data ? (
+            <Link href="/app/dashboard">
+              <Button>Dashboard</Button>
+            </Link>
+          ) : (
+            <Link href="/auth/signin">
+              <Button>Sign In</Button>
+            </Link>
+          )}
         </div>
       </div>
     </>
   );
 }
-
-export default Home;

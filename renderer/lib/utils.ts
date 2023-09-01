@@ -102,3 +102,41 @@ export function formatTimeDuration(durationInMs: number) {
     return `${Math.floor(durationInMs / 86400000)}d`;
   }
 }
+
+const gradients: string[] = [
+  "linear-gradient(to right, #f44336, #e91e63, #d81b60)",
+  "linear-gradient(to right, #ff9800, #ff7f0e, #ff6f0d)",
+  "linear-gradient(to right, #ffeb3b, #ffc107, #ffb706)",
+  "linear-gradient(to right, #55acee, #66c0f5, #77d0f9)",
+  "linear-gradient(to right, #0079c0, #38ef7d, #79f6ae)",
+  "linear-gradient(to right, #29b6f6, #4fc3f7, #79d2f8)",
+  "linear-gradient(to right, #ff1744, #ff0e66, #ff008d)",
+  "linear-gradient(to right, #f4511e, #ee6969, #d8877a)",
+  "linear-gradient(to right, #4caf50, #85d35b, #c0e15d)",
+  "linear-gradient(to right, #f0ad4e, #ff7f0e, #ff5200)",
+];
+
+function hashGradient(string: string): number {
+  let hash = 0;
+  for (let i = 0; i < string.length; i++) {
+    hash = hash * 31 + string.charCodeAt(i);
+  }
+  return hash % gradients.length;
+}
+
+export function getGradient(string: string) {
+  return gradients[hashGradient(string)];
+}
+
+export function formatTime(seconds: number): string {
+  if (isNaN(seconds)) return "00:00";
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.round(seconds % 60);
+
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+  const formattedSeconds =
+    remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`;
+
+  return `${formattedMinutes}:${formattedSeconds}`;
+}

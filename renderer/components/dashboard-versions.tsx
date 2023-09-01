@@ -1,12 +1,12 @@
+import { PlaybarContext } from "@/app/app/projects/[projectId]/layout";
 import { StdReply } from "@/lib/stdReply";
 import { Preview, Version } from "@/lib/types";
 import { api, fetcher } from "@/lib/utils";
 import { Loader } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
 import useSWR from "swr";
 import { getColumns } from "./tables/versions/columns";
 import { DataTable } from "./tables/versions/data-table";
-import { useContext } from 'react';
-import { PlaybarContext } from '@/app/app/projects/[projectId]/layout';
 
 interface DashboardVersionsProps extends React.HTMLAttributes<HTMLDivElement> {
   branchName: string;
@@ -30,6 +30,14 @@ export function DashboardVersions(props: DashboardVersionsProps) {
     fetcher
   );
 
+  const [versions, setVersions] = useState<VersionWithPreview[]>([]);
+
+  useEffect(() => {
+    if (!reply?.data) return;
+
+    setVersions(reply.data);
+  }, [reply]);
+
   if (isLoading) {
     return <Loader className="animate-spin" />;
   }
@@ -41,8 +49,13 @@ export function DashboardVersions(props: DashboardVersionsProps) {
   return (
     <div>
       <DataTable
-        columns={getColumns(props.projectId, props.branchName, playbarContext)}
-        data={reply.data
+        columns={getColumns(
+          props.projectId,
+          props.branchName,
+          playbarContext,
+          (name) => setVersions(versions.filter((it) => it.name !== name))
+        )}
+        data={versions
           .sort(
             (a, b) =>
               new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -50,7 +63,7 @@ export function DashboardVersions(props: DashboardVersionsProps) {
           .map((it, i) => {
             return {
               ...it,
-              number: reply.data.length - i,
+              number: versions.length - i,
             };
           })}
       />
