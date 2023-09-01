@@ -92,7 +92,7 @@ export default function SettingsPage(props: SettingsProps) {
   }
 
   return (
-    <div>
+    <div className="py-5">
       <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
         Settings
       </h1>

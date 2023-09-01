@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/use-user";
 import { User } from "@/lib/types";
-import { api, prepare } from "@/lib/utils";
+import { api, getGradient, prepare } from "@/lib/utils";
 import logo from "@/public/images/logo.svg";
 import axios from "axios";
 import {
@@ -162,7 +162,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </aside>
+
           <div className="w-full overflow-auto px-8 py-10">{children}</div>
+          <div className="opacity-10">
+            <div
+              style={{
+                background: getGradient(Math.random().toString()),
+                animationDuration: "5000ms",
+              }}
+              className="w-3/4 h-1/3 absolute top-0 blur-3xl right-0 -z-10 rounded-full overflow-none rounded-br-none animate-pulse"
+            />
+          </div>
         </div>
       </>
     </UserContext.Provider>

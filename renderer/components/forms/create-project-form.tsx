@@ -82,11 +82,15 @@ export function CreateProjectForm({
 
   return (
     <Form {...form}>
-      <Input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
+      <div className="flex flex-col gap-4 mb-4">
+        <FormLabel htmlFor="cover-art">Cover Art</FormLabel>
+        <Input
+          type="file"
+          id="cover-art"
+          accept="image/*"
+          onChange={(e) => setFile(e.target.files[0])}
+        />
+      </div>
 
       <form
         onSubmit={form.handleSubmit(onSubmit)}
