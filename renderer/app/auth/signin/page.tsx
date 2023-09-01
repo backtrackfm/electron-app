@@ -1,10 +1,12 @@
+"use client";
+
 import { SigninForm } from "@/components/forms/signin-form";
-import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import brandImg from "@/public/images/scott-rodgerson-z0MDyylvY1k-unsplash.jpg";
 import logo from "@/public/images/logo.svg";
+import brandImg from "@/public/images/scott-rodgerson-z0MDyylvY1k-unsplash.jpg";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function SignIn() {
   return (

@@ -7,7 +7,7 @@ import { getProjectSpace } from "@/lib/localstorage-utils";
 import { StdReply } from "@/lib/stdReply";
 import { Version } from "@/lib/types";
 import { api, fetcher, formatTimeDuration } from "@/lib/utils";
-import { ipcRenderer } from "electron";
+import electron from "electron";
 import { Stats } from "fs";
 import { RefreshCcw } from "lucide-react";
 import { useState } from "react";
@@ -20,7 +20,6 @@ export type SystemFile = {
 };
 
 function findLatestModifiedFile(files: SystemFile[]): SystemFile | null {
-  console.log(files);
   if (files.length === 0) {
     return null; // Return null if the array is empty
   }
@@ -40,6 +39,8 @@ export default function CreateVersionPage({
     branchId: string;
   };
 }) {
+  const ipcRenderer = electron.ipcRenderer || false;
+
   const [projectSpace, setProjectSpace] = useState<string>(
     getProjectSpace(params.projectId).spacePath
   );
@@ -62,6 +63,8 @@ export default function CreateVersionPage({
   );
 
   const handleRefresh = async () => {
+    if (!ipcRenderer) return;
+
     // If there isn't a previous version, then we want to just
     if (!reply) {
       ipcRenderer.send(

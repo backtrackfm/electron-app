@@ -17,7 +17,7 @@ import { Preview } from "@/lib/types";
 import { api, formatDate, prepare } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import axios from "axios";
-import { ipcRenderer } from "electron";
+import electron from "electron";
 import { DownloadCloud, Eye, MoreHorizontal, Play, Trash } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -102,8 +102,10 @@ export function getColumns(
       cell: ({ row }) => {
         const filesURL: string = row.getValue("filesURL");
         const name: string = row.getValue("name");
+        const ipcRenderer = electron.ipcRenderer || false;
 
         function downloadFiles() {
+          if (!ipcRenderer) return;
           ipcRenderer.send("projectFiles:download", {
             url: filesURL,
             properties: {

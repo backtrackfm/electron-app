@@ -5,8 +5,11 @@ module.exports = {
   rendererSrcDir: "renderer",
 
   // main process' webpack config
-  webpack: (config, env) => {
-    // do some stuff here
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.target = "electron-main";
+    }
+
     return config;
   },
 };

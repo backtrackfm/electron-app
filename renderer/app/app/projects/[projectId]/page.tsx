@@ -8,7 +8,7 @@ import { StdReply } from "@/lib/stdReply";
 import { Branch, Project } from "@/lib/types";
 import { api, fetcher, prepare } from "@/lib/utils";
 import axios from "axios";
-import { ipcRenderer } from "electron";
+import electron from "electron";
 import { FolderHeart, Loader } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,6 +21,8 @@ export default function ViewProject({
 }: {
   params: { projectId: string };
 }) {
+  const ipcRenderer = electron.ipcRenderer || false;
+
   const router = useRouter();
   const [branch, setBranch] = useState<string | null>(null);
   const [projectSpace, setProjectSpace] = useState<string>(
@@ -62,6 +64,8 @@ export default function ViewProject({
   }
 
   const handleSelectFolder = async () => {
+    if (!ipcRenderer) return;
+
     ipcRenderer.send("select-folder");
 
     ipcRenderer.on("select-folder-return", (event, data) => {
