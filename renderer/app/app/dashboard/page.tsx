@@ -13,9 +13,13 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-10">
       <div className="relative overflow-hidden rounded-md">
-        <h1 className="scroll-m-20 text-4xl absolute left-10 font-extrabold tracking-tight lg:text-5xl my-10">
-          {user.name}
-        </h1>
+        <div className="absolute left-10 top-1/2 -translate-y-1/2">
+          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
+            {user.name}
+          </h1>
+          <p className="font-semibold">{user.type}</p>
+        </div>
+
         <div
           className="h-32 w-full flex items-center p-10 blur-3xl animate-pulse opacity-10"
           style={{
@@ -25,7 +29,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      <h1>Projects</h1>
+      <h1 className="text-lg font-medium">Your Projects</h1>
       <DashboardProjects />
       <Link href="/app/projects/create">
         <Button>Create new project</Button>

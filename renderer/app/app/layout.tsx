@@ -6,7 +6,13 @@ import { User } from "@/lib/types";
 import { api, prepare } from "@/lib/utils";
 import logo from "@/public/images/logo.svg";
 import axios from "axios";
-import { Check, LayoutDashboard, LoaderIcon, LogOut } from "lucide-react";
+import {
+  Check,
+  LayoutDashboard,
+  LoaderIcon,
+  LogOut,
+  Settings,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -82,13 +88,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   Backtrack
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-2">
                   <div className="hover:bg-zinc-900 p-2 rounded-md">
                     <Link
                       href="/app/dashboard"
                       className="flex items-center gap-2 font-medium text-md"
                     >
                       <LayoutDashboard className="w-6 h-6" /> Dashboard
+                    </Link>
+                  </div>
+                  <div className="hover:bg-zinc-900 p-2 rounded-md">
+                    <Link
+                      href="/app/settings"
+                      className="flex items-center gap-2 font-medium text-md"
+                    >
+                      <Settings className="w-6 h-6" /> User Settings
                     </Link>
                   </div>
                 </div>

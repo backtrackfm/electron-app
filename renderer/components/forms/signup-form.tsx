@@ -13,7 +13,6 @@ import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -101,9 +100,6 @@ export function SignupForm({ className, ...props }: SignupFormProps) {
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormDescription>
-                This will change what's available to you
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
