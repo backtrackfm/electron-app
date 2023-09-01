@@ -12,10 +12,9 @@ import { ipcRenderer } from "electron";
 import { FolderHeart, Loader } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
-import { PlaybarContext } from "./layout";
 
 export default function ViewProject({
   params,

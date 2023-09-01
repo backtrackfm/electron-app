@@ -10,6 +10,7 @@ const nextConfig = {
   images: {
     domains: ["backtrack-media.s3.eu-west-2.amazonaws.com"],
   },
+  output: "export",
 };
 
 module.exports = nextConfig;
